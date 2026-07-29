@@ -1,0 +1,22 @@
+﻿{
+    "name": "Sunday School",
+    "short_name": "Sunday School",
+    "description": "Children's Ministry app for events, lessons, and notices.",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#6ec5ff",
+    "icons": [
+        {
+            "src": "assets/secured/icons/logo.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "assets/secured/icons/logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

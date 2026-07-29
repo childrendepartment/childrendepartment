@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/secured/icons/logo.png">
+    <link rel="apple-touch-icon" href="assets/secured/icons/logo.png">
+    <meta name="theme-color" content="#6ec5ff">
+    <title>Lessons - Children's Ministry</title>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a class="navlogo" href="index.html">
+            Children's Ministry
+            <span id="nav-streak" class="navlogo__streak hidden" aria-label="Streak">
+                <span class="streak-icon">🔥</span>
+                <span class="streak-count">0</span>
+            </span>
+        </a>
+
+        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul class="navigation-redirect">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="divisions.html">Division</a></li>
+            <li><a href="lessons.html" class="active">Lessons</a></li>
+            <li id="login-nav-item"><a href="login.html">Log In</a></li>
+            <li id="account-nav-item" class="nav-account-item hidden">
+                <button type="button" class="nav-account-chip" id="nav-account-chip" aria-haspopup="dialog">
+                    <span class="chip-label">Account</span>
+                    <span class="chip-meta">Open</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <section class="hero-banner lesson-hero">
+        <div class="hero-copy">
+            <p class="hero-tag">Children's Ministry</p>
+            <h1>Lessons & teaching resources</h1>
+            <p>Browse the latest Bible lessons, memory verses, and video teaching links from the department.</p>
+        </div>
+    </section>
+
+    <main class="lessons-page">
+        <div class="lessons-shell">
+            <section class="lessons-intro">
+                <div class="lessons-toolbar">
+                    <div class="toolbar-copy">
+                        <p class="section-tag">Lessons</p>
+                        <h1>Previous Lessons</h1>
+                        <p>View our previous lesson through this website section, study thoroughly and know more about God.</p>
+                    </div>
+                    <button type="button" class="add-lesson-btn hidden" id="add-lesson-btn">Add Lesson</button>
+                </div>
+            </section>
+
+            <section class="lesson-form-panel hidden" id="lesson-form-panel">
+                <div class="form-heading">
+                    <div class="form-heading-row">
+                        <div>
+                            <h2 id="lesson-form-title">Add a lesson</h2>
+                            <p id="lesson-form-caption">Use this form to publish a new lesson post.</p>
+                        </div>
+                        <button type="button" class="close-form-btn" id="close-form-btn" aria-label="Close lesson form">×</button>
+                    </div>
+                </div>
+                <form id="lesson-form" class="lesson-form">
+                    <div class="lesson-form-grid">
+                        <div class="form-group">
+                            <label for="lesson-title">Title</label>
+                            <input id="lesson-title" name="title" type="text" placeholder="The Good Shepherd" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lesson-date">Date</label>
+                            <input id="lesson-date" name="date" type="date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lesson-content">Content</label>
+                        <textarea id="lesson-content" name="content" placeholder="Write the lesson summary here..." required></textarea>
+                    </div>
+
+                    <div class="lesson-form-grid">
+                        <div class="form-group">
+                            <label for="lesson-memoryverse-title">Memory Verse</label>
+                            <input id="lesson-memoryverse-title" name="memoryverseTitle" type="text" placeholder="John 3:16">
+                        </div>
+                        <div class="form-group">
+                            <label for="lesson-youtube">YouTube Link</label>
+                            <input id="lesson-youtube" name="youtube" type="url" placeholder="https://www.youtube.com/watch?v=...">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lesson-memoryverse-content">Memory Verse Content</label>
+                        <textarea id="lesson-memoryverse-content" name="memoryverseContent" placeholder="For God so loved the world..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-lesson-btn">Publish Lesson</button>
+                </form>
+            </section>
+
+            <section class="lessons-list" id="lessons-list" aria-live="polite"></section>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-database-compat.js"></script>
+    <script src="js/navbar.js"></script>
+
+    <script type="module">
+        import {
+            auth,
+            db,
+            ref,
+            onValue,
+            push,
+            remove,
+            onAuthStateChanged,
+            update
+        } from './assets/firebase/secured-firebase.js';
+
+        const ALLOWED_UIDS = new Set([
+            'W1kKuGtCwWeF9n4Vqv9MAdhbn6g1',
+            'tGL8dRTcAIfzUjuWInW6rTAn3Ez1'
+        ]);
+        const lessonsList = document.getElementById('lessons-list');
+        const addLessonButton = document.getElementById('add-lesson-btn');
+        const lessonFormPanel = document.getElementById('lesson-form-panel');
+        const lessonForm = document.getElementById('lesson-form');
+        const lessonFormTitle = document.getElementById('lesson-form-title');
+        const lessonFormCaption = document.getElementById('lesson-form-caption');
+        const closeFormButton = document.getElementById('close-form-btn');
+
+        let currentUser = null;
+        let lessons = [];
+        let editingLessonId = null;
+
+        const escapeHtml = (value) => String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+
+        const formatDate = (value) => {
+            if (!value) return 'Date not set';
+            const parsed = new Date(value);
+            if (Number.isNaN(parsed.getTime())) return value;
+            return parsed.toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        };
+
+        const normalizeYouTubeUrl = (value) => {
+            if (!value) return '';
+            const trimmed = value.trim();
+            if (!trimmed) return '';
+            const embedMatch = trimmed.match(/(?:youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtube\.com\/shorts\/|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+            if (embedMatch) {
+                return `https://www.youtube.com/embed/${embedMatch[1]}`;
+            }
+            if (/^https?:\/\//i.test(trimmed)) {
+                return trimmed;
+            }
+            return `https://${trimmed}`;
+        };
+
+        const canManageLesson = () => ALLOWED_UIDS.has(currentUser?.uid);
+
+        const updateLessonManagementUI = () => {
+            const isAdmin = canManageLesson();
+            addLessonButton.classList.add('hidden');
+            addLessonButton.style.display = 'none';
+            if (isAdmin) {
+                addLessonButton.classList.remove('hidden');
+                addLessonButton.style.display = '';
+            }
+
+            if (!isAdmin) {
+                lessonFormPanel.classList.add('hidden');
+                if (editingLessonId) {
+                    resetLessonForm();
+                }
+            }
+        };
+
+        const resetLessonForm = () => {
+            lessonForm.reset();
+            editingLessonId = null;
+            lessonFormTitle.textContent = 'Add a lesson';
+            lessonFormCaption.textContent = 'Use this form to publish a new lesson post.';
+            document.querySelector('.submit-lesson-btn').textContent = 'Publish Lesson';
+        };
+
+        const openLessonForm = (lesson = null) => {
+            if (lesson) {
+                editingLessonId = lesson.id;
+                document.getElementById('lesson-title').value = lesson.title || '';
+                document.getElementById('lesson-date').value = lesson.date || '';
+                document.getElementById('lesson-content').value = lesson.content || '';
+                document.getElementById('lesson-memoryverse-title').value = lesson.memoryVerseTitle || '';
+                document.getElementById('lesson-memoryverse-content').value = lesson.memoryVerseContent || '';
+                document.getElementById('lesson-youtube').value = lesson.youtubeLink || '';
+                lessonFormTitle.textContent = 'Edit lesson';
+                lessonFormCaption.textContent = 'Update the lesson details for this post.';
+                document.querySelector('.submit-lesson-btn').textContent = 'Save Changes';
+            } else {
+                resetLessonForm();
+            }
+
+            lessonFormPanel.classList.remove('hidden');
+            lessonFormPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        const renderLessons = () => {
+            if (!lessons.length) {
+                lessonsList.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No lessons yet</h3>
+                        <p>Be the first to publish a lesson for the children’s department.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            lessonsList.innerHTML = lessons.map((lesson) => `
+                <article class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div>
+                            <h3>${escapeHtml(lesson.title || 'Untitled Lesson')}</h3>
+                            <p class="lesson-meta">${escapeHtml(formatDate(lesson.date))}</p>
+                        </div>
+                        ${canManageLesson() ? `
+                            <div class="lesson-card-actions">
+                                <button type="button" class="edit-lesson-btn" data-key="${escapeHtml(lesson.id)}">Edit</button>
+                                <button type="button" class="delete-lesson-btn" data-key="${escapeHtml(lesson.id)}">Delete</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <p class="lesson-content">${escapeHtml(lesson.content || 'No lesson content provided.')}</p>
+                    ${lesson.youtubeLink ? `
+                        <div class="lesson-video">
+                            <iframe src="${escapeHtml(lesson.youtubeLink)}" title="${escapeHtml(lesson.title || 'Lesson video')}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    ` : ''}
+                    <button type="button" class="memory-verse-toggle" data-lesson-id="${escapeHtml(lesson.id)}">Show Memory Verse</button>
+                    <div class="memory-verse-card hidden" id="memory-verse-${escapeHtml(lesson.id)}">
+                        ${lesson.memoryVerseTitle || lesson.memoryVerseContent ? `
+                            <p class="memory-verse-label">Memory Verse</p>
+                            <p class="memory-verse-text">“${escapeHtml(lesson.memoryVerseContent || 'No memory verse content added yet.') }”</p>
+                            <p class="memory-verse-reference">${escapeHtml(lesson.memoryVerseTitle || 'No reference added yet.')}</p>
+                        ` : '<p>No memory verse added yet.</p>'}
+                    </div>
+                </article>
+            `).join('');
+        };
+
+        const loadLessons = () => {
+            const lessonsRef = ref(db, 'lessons');
+            onValue(lessonsRef, (snapshot) => {
+                const lessonMap = snapshot.val() || {};
+                lessons = Object.entries(lessonMap).map(([id, lesson]) => ({ id, ...lesson }))
+                    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+                renderLessons();
+            });
+        };
+
+        addLessonButton.addEventListener('click', () => {
+            if (!canManageLesson()) {
+                return;
+            }
+            openLessonForm();
+        });
+
+        closeFormButton.addEventListener('click', () => {
+            lessonFormPanel.classList.add('hidden');
+            resetLessonForm();
+        });
+
+        lessonForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!currentUser) {
+                alert('Please sign in before posting a lesson.');
+                return;
+            }
+
+            if (!canManageLesson()) {
+                alert('Only the allowed account can publish lessons.');
+                return;
+            }
+
+            const payload = {
+                title: document.getElementById('lesson-title').value.trim(),
+                date: document.getElementById('lesson-date').value,
+                content: document.getElementById('lesson-content').value.trim(),
+                memoryVerseTitle: document.getElementById('lesson-memoryverse-title').value.trim(),
+                memoryVerseContent: document.getElementById('lesson-memoryverse-content').value.trim(),
+                youtubeLink: normalizeYouTubeUrl(document.getElementById('lesson-youtube').value),
+                createdBy: '',
+                createdByUid: currentUser.uid,
+                createdAt: new Date().toISOString()
+            };
+
+            if (editingLessonId) {
+                await update(ref(db, `lessons/${editingLessonId}`), payload);
+            } else {
+                await push(ref(db, 'lessons'), payload);
+                window.showAppNotification?.('New lesson added', {
+                    body: `A new lesson titled "${payload.title || 'Untitled lesson'}" has been published.`,
+                    icon: '/assets/secured/icons/logo.png',
+                    badge: '/assets/secured/icons/logo.png',
+                });
+            }
+
+            lessonForm.reset();
+            lessonFormPanel.classList.add('hidden');
+            resetLessonForm();
+        });
+
+        lessonsList.addEventListener('click', async (event) => {
+            const toggleButton = event.target.closest('.memory-verse-toggle');
+            if (toggleButton) {
+                const lessonId = toggleButton.dataset.lessonId;
+                const verseCard = document.getElementById(`memory-verse-${lessonId}`);
+                if (verseCard) {
+                    const isHidden = verseCard.classList.toggle('hidden');
+                    toggleButton.textContent = isHidden ? 'Show Memory Verse' : 'Hide Memory Verse';
+                }
+                return;
+            }
+
+            const editButton = event.target.closest('.edit-lesson-btn');
+            if (editButton) {
+                const lessonId = editButton.dataset.key;
+                const lesson = lessons.find((item) => item.id === lessonId);
+                if (lesson) {
+                    openLessonForm(lesson);
+                }
+                return;
+            }
+
+            const deleteButton = event.target.closest('.delete-lesson-btn');
+            if (!deleteButton) return;
+
+            const lessonId = deleteButton.dataset.key;
+            const confirmed = window.confirm('Delete this lesson?');
+            if (!confirmed) return;
+
+            await remove(ref(db, `lessons/${lessonId}`));
+        });
+
+        currentUser = auth.currentUser || null;
+        updateLessonManagementUI();
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            updateLessonManagementUI();
+            renderLessons();
+        });
+
+        loadLessons();
+    </script>
+    <script type="module" src="js/streak.js"></script>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <p class="footer-title">Connect with us</p>
+                <ul class="footer-links">
+                    <li><a href="https://www.facebook.com/MCOC33AD" target="_blank" rel="noopener">Facebook</a></li>
+                    <li><a href="https://www.youtube.com/@metrovillechurchofchrist33ad" target="_blank" rel="noopener">YouTube</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <p class="footer-title">Visit us</p>
+                <address>
+                    B2 L5 Blue Palm St., Metroville Subd.
+                    <br>Balibago, Sta. Rosa, Laguna
+                </address>
+                <a href="https://maps.app.goo.gl/aVL7m1dCXdntAj4j6" target="_blank" rel="noopener">Open map</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

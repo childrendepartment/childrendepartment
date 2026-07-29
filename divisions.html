@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/secured/icons/logo.png">
+    <link rel="apple-touch-icon" href="assets/secured/icons/logo.png">
+    <meta name="theme-color" content="#6ec5ff">
+    <title>Divisions - Children's Ministry</title>
+</head>
+<body class="divisions-page">
+
+    <nav class="navbar">
+        <a class="navlogo" href="index.html">
+            Children's Ministry
+            <span id="nav-streak" class="navlogo__streak hidden" aria-label="Streak">
+                <span class="streak-icon">🔥</span>
+                <span class="streak-count">0</span>
+            </span>
+        </a>
+
+        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul class="navigation-redirect">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="divisions.html" class="active">Division</a></li>
+            <li><a href="lessons.html">Lessons</a></li>
+            <li id="login-nav-item"><a href="login.html">Log In</a></li>
+            <li id="account-nav-item" class="nav-account-item hidden">
+                <button type="button" class="nav-account-chip" id="nav-account-chip" aria-haspopup="dialog">
+                    <span class="chip-label">Account</span>
+                    <span class="chip-meta">Open</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <section class="hero-banner divisions-hero">
+        <div class="hero-copy">
+            <p class="hero-tag">Attendance & class management</p>
+            <h1>Divisions attendance dashboard</h1>
+            <p>Attendance tracking for Younger, Primary, and Middler divisions with realtime database storage.</p>
+        </div>
+    </section>
+
+    <main class="page-section">
+        <div class="section-inner">
+            <div class="divisions-toolbar">
+                <div>
+                    <p class="section-tag">Divisions</p>
+                    <h2>Student attendance by division</h2>
+                    <p>Check attendance and view details for each division.</p>
+                </div>
+                <div class="month-control">
+                    <button type="button" id="prev-month-btn" class="secondary-button">Previous month</button>
+                    <span class="month-label" id="display-month"></span>
+                    <button type="button" id="next-month-btn" class="secondary-button">Current month</button>
+                </div>
+                <div class="attendance-controls">
+                    <label for="month-select">Month:</label>
+                    <select id="month-select" class="select-input"></select>
+                    <label for="attendance-view-select">View:</label>
+                    <select id="attendance-view-select" class="select-input">
+                        <option value="detailed">Detailed</option>
+                        <option value="summary">Summary</option>
+                    </select>
+                    <button type="button" id="download-attendance-btn" class="secondary-button">Download Attendance</button>
+                </div>
+            </div>
+
+            <div id="admin-status" class="status-banner"></div>
+
+            <div class="division-tabs" id="division-tabs"></div>
+
+            <div class="division-card">
+                <div class="division-card-header">
+                    <div>
+                        <h3 id="division-title">Younger</h3>
+                        <p id="division-description">Ages 4–6</p>
+                    </div>
+                </div>
+
+                <form id="add-student-form" class="add-student-form">
+                    <label for="student-input">Add student names</label>
+                    <input id="student-input" type="text" aria-label="Add student names">
+                    <button type="submit">Add student(s)</button>
+                    <p class="form-note">Add one name or multiple names separated by “/”.</p>
+                </form>
+
+                <div class="student-list-wrap">
+                    <h4>Students</h4>
+                    <ul class="student-list" id="student-list"></ul>
+                </div>
+
+                <div class="attendance-table-wrap">
+                    <table class="attendance-table" id="attendance-table"></table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/navbar.js"></script>
+    <script type="module" src="js/divisions.js"></script>
+    <script type="module" src="js/streak.js"></script>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <p class="footer-title">Connect with us</p>
+                <ul class="footer-links">
+                    <li><a href="https://www.facebook.com/MCOC33AD" target="_blank" rel="noopener">Facebook</a></li>
+                    <li><a href="https://www.youtube.com/@metrovillechurchofchrist33ad" target="_blank" rel="noopener">YouTube</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <p class="footer-title">Visit us</p>
+                <address>
+                    B2 L5 Blue Palm St., Metroville Subd.
+                    <br>Balibago, Sta. Rosa, Laguna
+                </address>
+                <a href="https://maps.app.goo.gl/aVL7m1dCXdntAj4j6" target="_blank" rel="noopener">Open map</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

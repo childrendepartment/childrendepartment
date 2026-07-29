@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/secured/icons/logo.png">
+    <link rel="apple-touch-icon" href="assets/secured/icons/logo.png">
+    <meta name="theme-color" content="#6ec5ff">
+    <title>Events - Children's Ministry</title>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a class="navlogo" href="index.html">
+            Children's Ministry
+            <span id="nav-streak" class="navlogo__streak hidden" aria-label="Streak">
+                <span class="streak-icon">🔥</span>
+                <span class="streak-count">0</span>
+            </span>
+        </a>
+
+        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul class="navigation-redirect">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html" class="active">Events</a></li>
+            <li><a href="divisions.html">Division</a></li>
+            <li><a href="lessons.html">Lessons</a></li>
+            <li id="login-nav-item"><a href="login.html">Log In</a></li>
+            <li id="account-nav-item" class="nav-account-item hidden">
+                <button type="button" class="nav-account-chip" id="nav-account-chip" aria-haspopup="dialog">
+                    <span class="chip-label">Account</span>
+                    <span class="chip-meta">Open</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <section class="hero-banner event-hero">
+        <div class="hero-copy">
+            <p class="hero-tag">Children's Ministry</p>
+            <h1>Event announcements & updates</h1>
+            <p>Check upcoming gatherings, service events, and activities with full attachments for the community.</p>
+        </div>
+    </section>
+
+    <main class="events-page">
+        <div class="events-shell">
+            <section class="events-intro">
+                <div class="events-toolbar">
+                    <div class="toolbar-copy">
+                        <p class="section-tag">Events</p>
+                        <h1>Upcoming announcements</h1>
+                        <p>Use this space to publish event news, links, and images for children and families.</p>
+                    </div>
+                    <button type="button" class="add-lesson-btn hidden" id="add-event-btn">Add Event</button>
+                </div>
+            </section>
+
+            <section class="lesson-form-panel hidden" id="event-form-panel">
+                <div class="form-heading">
+                    <div class="form-heading-row">
+                        <div>
+                            <h2 id="event-form-title">Add an event</h2>
+                            <p id="event-form-caption">Use this form to publish a new event announcement.</p>
+                        </div>
+                        <button type="button" class="close-form-btn" id="close-event-form-btn" aria-label="Close event form">×</button>
+                    </div>
+                </div>
+                <form id="event-form" class="lesson-form">
+                    <div class="lesson-form-grid">
+                        <div class="form-group">
+                            <label for="event-title">Title</label>
+                            <input id="event-title" name="title" type="text" placeholder="Family Fun Day" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="event-date">Date</label>
+                            <input id="event-date" name="date" type="date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-location">Location</label>
+                        <input id="event-location" name="location" type="text" placeholder="Church Hall" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-description">Description</label>
+                        <textarea id="event-description" name="description" placeholder="Describe the event and what families should expect..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-links">Event links (one per line)</label>
+                        <textarea id="event-links" name="links" placeholder="https://example.com/register"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-images">Upload event images</label>
+                        <input id="event-images" name="images" type="file" accept="image/*" multiple>
+                        <small>Upload one or more images to show in the event announcement.</small>
+                    </div>
+
+                    <div class="form-group existing-images-panel hidden" id="existing-images-panel">
+                        <p class="existing-images-label">Current images</p>
+                        <div class="event-images" id="existing-event-images"></div>
+                    </div>
+
+                    <button type="submit" class="submit-lesson-btn">Publish Event</button>
+                </form>
+            </section>
+
+            <section class="lessons-list" id="events-list" aria-live="polite"></section>
+        </div>
+    </main>
+
+    <div class="image-gallery-modal hidden" id="image-gallery-modal" aria-hidden="true">
+        <div class="image-gallery-backdrop" data-close-gallery="true"></div>
+        <div class="image-gallery-dialog" role="dialog" aria-modal="true" aria-label="Event images">
+            <button type="button" class="gallery-close-btn" id="gallery-close-btn" aria-label="Close gallery">×</button>
+            <div class="gallery-main">
+                <button type="button" class="gallery-nav gallery-prev" id="gallery-prev-btn" aria-label="Previous image">‹</button>
+                <div class="gallery-stage">
+                    <img id="gallery-image" src="" alt="Event image">
+                </div>
+                <button type="button" class="gallery-nav gallery-next" id="gallery-next-btn" aria-label="Next image">›</button>
+            </div>
+            <div class="gallery-thumbs" id="gallery-thumbs"></div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-database-compat.js"></script>
+    <script src="js/navbar.js"></script>
+
+    <script type="module">
+        import {
+            auth,
+            db,
+            ref,
+            onValue,
+            push,
+            remove,
+            update,
+            set,
+            onAuthStateChanged
+        } from './assets/firebase/secured-firebase.js';
+
+        const ALLOWED_UIDS = new Set([
+            'W1kKuGtCwWeF9n4Vqv9MAdhbn6g1',
+            'tGL8dRTcAIfzUjuWInW6rTAn3Ez1'
+        ]);
+        const eventsList = document.getElementById('events-list');
+        const addEventButton = document.getElementById('add-event-btn');
+        const eventFormPanel = document.getElementById('event-form-panel');
+        const eventForm = document.getElementById('event-form');
+        const eventFormTitle = document.getElementById('event-form-title');
+        const eventFormCaption = document.getElementById('event-form-caption');
+        const closeEventFormButton = document.getElementById('close-event-form-btn');
+        const existingImagesPanel = document.getElementById('existing-images-panel');
+        const existingImagesContainer = document.getElementById('existing-event-images');
+
+        let currentUser = null;
+        let events = [];
+        let editingEventId = null;
+        let existingEventImages = [];
+        let galleryImages = [];
+        let galleryIndex = 0;
+
+        const escapeHtml = (value) => String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+
+        const formatDate = (value) => {
+            if (!value) return 'Date not set';
+            const parsed = new Date(value);
+            if (Number.isNaN(parsed.getTime())) return value;
+            return parsed.toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        };
+
+        const normalizeLink = (value) => {
+            if (!value) return '';
+            const trimmed = value.trim();
+            if (!trimmed) return '';
+            if (/^https?:\/\//i.test(trimmed)) {
+                return trimmed;
+            }
+            return `https://${trimmed}`;
+        };
+
+        const parseLinks = (value) => {
+            return String(value || '')
+                .split(/\r?\n/)
+                .map(normalizeLink)
+                .filter(Boolean);
+        };
+
+        const canManageEvent = () => ALLOWED_UIDS.has(currentUser?.uid);
+
+        const updateEventManagementUI = () => {
+            const isAdmin = canManageEvent();
+            addEventButton.classList.add('hidden');
+            addEventButton.style.display = 'none';
+            if (isAdmin) {
+                addEventButton.classList.remove('hidden');
+                addEventButton.style.display = '';
+            }
+
+            if (!isAdmin) {
+                eventFormPanel.classList.add('hidden');
+                if (editingEventId) {
+                    resetEventForm();
+                }
+            }
+        };
+
+        const resetEventForm = () => {
+            eventForm.reset();
+            editingEventId = null;
+            existingEventImages = [];
+            eventFormTitle.textContent = 'Add an event';
+            eventFormCaption.textContent = 'Use this form to publish a new event announcement.';
+            document.querySelector('.submit-lesson-btn').textContent = 'Publish Event';
+            existingImagesPanel.classList.add('hidden');
+            existingImagesContainer.innerHTML = '';
+        };
+
+        const renderExistingImages = () => {
+            if (!existingEventImages.length) {
+                existingImagesPanel.classList.add('hidden');
+                existingImagesContainer.innerHTML = '';
+                return;
+            }
+            existingImagesPanel.classList.remove('hidden');
+            existingImagesContainer.innerHTML = existingEventImages.map((url) => `
+                <div class="event-image-thumb">
+                    <img src="${escapeHtml(url)}" alt="Existing event image">
+                </div>
+            `).join('');
+        };
+
+        const openEventForm = (eventData = null) => {
+            if (eventData) {
+                editingEventId = eventData.id;
+                document.getElementById('event-title').value = eventData.title || '';
+                document.getElementById('event-date').value = eventData.date || '';
+                document.getElementById('event-location').value = eventData.location || '';
+                document.getElementById('event-description').value = eventData.description || '';
+                document.getElementById('event-links').value = (eventData.links || []).join('\n');
+                existingEventImages = eventData.imageUrls || [];
+                renderExistingImages();
+                eventFormTitle.textContent = 'Edit event';
+                eventFormCaption.textContent = 'Update the event details for this announcement.';
+                document.querySelector('.submit-lesson-btn').textContent = 'Save Changes';
+            } else {
+                resetEventForm();
+            }
+
+            eventFormPanel.classList.remove('hidden');
+            eventFormPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        const readBlobAsDataURL = (blob) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error('Failed to read compressed image.'));
+                reader.readAsDataURL(blob);
+            });
+        };
+
+        const compressImageFile = async (file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) => {
+            return new Promise((resolve, reject) => {
+                const image = new Image();
+                const objectUrl = URL.createObjectURL(file);
+                image.onload = async () => {
+                    URL.revokeObjectURL(objectUrl);
+                    let width = image.width;
+                    let height = image.height;
+                    const ratio = Math.min(1, maxWidth / width, maxHeight / height);
+                    width = Math.round(width * ratio);
+                    height = Math.round(height * ratio);
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(image, 0, 0, width, height);
+
+                    canvas.toBlob(async (blob) => {
+                        if (!blob) {
+                            reject(new Error('Image compression failed.'));
+                            return;
+                        }
+                        try {
+                            const dataUrl = await readBlobAsDataURL(blob);
+                            resolve(dataUrl);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    }, 'image/jpeg', quality);
+                };
+                image.onerror = () => {
+                    URL.revokeObjectURL(objectUrl);
+                    reject(new Error('Unable to load image for compression.'));
+                };
+                image.src = objectUrl;
+            });
+        };
+
+        const uploadEventImages = async (files) => {
+            if (!files?.length) return [];
+            const uploads = Array.from(files).map((file) => compressImageFile(file));
+            return Promise.all(uploads);
+        };
+
+        const openImageGallery = (images, startIndex = 0) => {
+            if (!images?.length) return;
+            galleryImages = images;
+            galleryIndex = Math.min(Math.max(0, startIndex), images.length - 1);
+            const modal = document.getElementById('image-gallery-modal');
+            const galleryImage = document.getElementById('gallery-image');
+            const galleryThumbs = document.getElementById('gallery-thumbs');
+            galleryImage.src = '';
+            galleryImage.alt = `Event image ${galleryIndex + 1}`;
+            galleryThumbs.innerHTML = galleryImages.map((url, index) => `
+                <button type="button" class="gallery-thumb ${index === galleryIndex ? 'active' : ''}" data-gallery-thumb-index="${index}" aria-label="Show image ${index + 1}">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-src="${escapeHtml(url)}" alt="Event image ${index + 1}" loading="lazy">
+                </button>
+            `).join('');
+            galleryImage.src = galleryImages[galleryIndex];
+            galleryThumbs.querySelectorAll('img[data-src]').forEach((img) => {
+                img.src = img.dataset.src;
+                delete img.dataset.src;
+            });
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('modal-open');
+        };
+
+        const closeImageGallery = () => {
+            const modal = document.getElementById('image-gallery-modal');
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+        };
+
+        const updateGalleryImage = (nextIndex) => {
+            galleryIndex = Math.min(Math.max(0, nextIndex), galleryImages.length - 1);
+            const galleryImage = document.getElementById('gallery-image');
+            const galleryThumbs = document.getElementById('gallery-thumbs');
+            galleryImage.src = galleryImages[galleryIndex];
+            galleryImage.alt = `Event image ${galleryIndex + 1}`;
+            galleryThumbs.querySelectorAll('.gallery-thumb').forEach((thumb, index) => {
+                thumb.classList.toggle('active', index === galleryIndex);
+            });
+        };
+
+        const setupLazyImages = () => {
+            const pendingPlaceholders = eventsList.querySelectorAll('.event-image-placeholder[data-preview-url]');
+            if (!pendingPlaceholders.length) return;
+
+            const loadPlaceholderImage = (placeholder) => {
+                const src = placeholder.dataset.previewUrl;
+                if (!src) return;
+                const image = document.createElement('img');
+                image.src = src;
+                image.alt = 'Event image';
+                image.loading = 'lazy';
+                image.className = 'event-preview-image';
+                placeholder.replaceWith(image);
+            };
+
+            if (!('IntersectionObserver' in window)) {
+                pendingPlaceholders.forEach((placeholder) => loadPlaceholderImage(placeholder));
+                return;
+            }
+
+            const observer = new IntersectionObserver((entries, currentObserver) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    loadPlaceholderImage(entry.target);
+                    currentObserver.unobserve(entry.target);
+                });
+            }, { rootMargin: '180px 0px' });
+
+            pendingPlaceholders.forEach((placeholder) => observer.observe(placeholder));
+        };
+
+        const renderEvents = () => {
+            if (!events.length) {
+                eventsList.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No events yet</h3>
+                        <p>Publish the first event announcement to keep the kids ministry informed.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            eventsList.innerHTML = events.map((eventData) => {
+                const imageUrls = eventData.imageUrls || [];
+                const previewImages = imageUrls.slice(0, Math.min(3, imageUrls.length));
+                return `
+                    <article class="lesson-card">
+                        <div class="lesson-card-header">
+                            <div>
+                                <h3>${escapeHtml(eventData.title || 'Untitled Event')}</h3>
+                                <p class="lesson-meta">${escapeHtml(formatDate(eventData.date))}${eventData.location ? ` • ${escapeHtml(eventData.location)}` : ''}</p>
+                            </div>
+                            ${canManageEvent() ? `
+                                <div class="lesson-card-actions">
+                                    <button type="button" class="edit-lesson-btn" data-key="${escapeHtml(eventData.id)}">Edit</button>
+                                    <button type="button" class="delete-lesson-btn" data-key="${escapeHtml(eventData.id)}">Delete</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <p class="lesson-content">${escapeHtml(eventData.description || 'No event description provided.')}</p>
+                        ${(eventData.links || []).length ? `
+                            <div class="event-links">
+                                <p class="attachment-label">Event links</p>
+                                <ul>
+                                    ${eventData.links.map((link) => `
+                                        <li class="attachment-item"><a href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link)}</a></li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                        ${imageUrls.length ? `
+                            <div class="event-images ${imageUrls.length > 1 ? 'multi' : ''}">
+                                ${previewImages.map((url, index) => `
+                                    <button type="button" class="event-image-thumb ${imageUrls.length > 1 ? (index === 0 ? 'primary' : 'secondary') : ''} ${imageUrls.length > 1 ? 'clickable' : ''}" data-gallery-images='${escapeHtml(JSON.stringify(imageUrls))}' data-gallery-index="${index}">
+                                        <div class="event-image-media">
+                                            <div class="event-image-placeholder" data-preview-url="${escapeHtml(url)}">Loading photo…</div>
+                                        </div>
+                                        ${index === 2 && imageUrls.length > 3 ? `
+                                            <div class="image-overlay">+${imageUrls.length - 3} more</div>
+                                        ` : ''}
+                                        ${index === 1 && imageUrls.length === 2 ? `
+                                            <div class="image-overlay">View more</div>
+                                        ` : ''}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </article>
+                `;
+            }).join('');
+        };
+
+        const loadEvents = () => {
+            const eventsRef = ref(db, 'events');
+            onValue(eventsRef, (snapshot) => {
+                const eventMap = snapshot.val() || {};
+                events = Object.entries(eventMap).map(([id, eventData]) => ({ id, ...eventData }))
+                    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+                renderEvents();
+                setupLazyImages();
+            });
+        };
+
+        addEventButton.addEventListener('click', () => {
+            if (!canManageEvent()) {
+                return;
+            }
+            openEventForm();
+        });
+
+        closeEventFormButton.addEventListener('click', () => {
+            eventFormPanel.classList.add('hidden');
+            resetEventForm();
+        });
+
+        eventForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!currentUser) {
+                alert('Please sign in before posting an event.');
+                return;
+            }
+            if (!canManageEvent()) {
+                alert('Only the allowed account can publish event announcements.');
+                return;
+            }
+
+            const title = document.getElementById('event-title').value.trim();
+            const date = document.getElementById('event-date').value;
+            const location = document.getElementById('event-location').value.trim();
+            const description = document.getElementById('event-description').value.trim();
+            const links = parseLinks(document.getElementById('event-links').value);
+            const imageFiles = document.getElementById('event-images').files;
+
+            const eventRef = editingEventId ? ref(db, `events/${editingEventId}`) : push(ref(db, 'events'));
+
+            let uploadedUrls = [];
+            if (imageFiles.length) {
+                uploadedUrls = await uploadEventImages(imageFiles);
+            }
+
+            const payload = {
+                title,
+                date,
+                location,
+                description,
+                links,
+                imageUrls: [...existingEventImages, ...uploadedUrls],
+                createdByUid: currentUser.uid,
+                createdAt: new Date().toISOString()
+            };
+
+            if (editingEventId) {
+                await update(eventRef, payload);
+            } else {
+                await set(eventRef, payload);
+                window.showAppNotification?.('New event added', {
+                    body: `An event titled "${payload.title || 'Untitled event'}" is now available.`,
+                    icon: '/assets/secured/icons/logo.png',
+                    badge: '/assets/secured/icons/logo.png',
+                });
+            }
+
+            eventForm.reset();
+            eventFormPanel.classList.add('hidden');
+            resetEventForm();
+        });
+
+        document.getElementById('gallery-close-btn').addEventListener('click', closeImageGallery);
+        document.querySelector('.image-gallery-backdrop').addEventListener('click', closeImageGallery);
+        document.getElementById('gallery-prev-btn').addEventListener('click', () => {
+            if (!galleryImages.length) return;
+            updateGalleryImage(galleryIndex - 1);
+        });
+        document.getElementById('gallery-next-btn').addEventListener('click', () => {
+            if (!galleryImages.length) return;
+            updateGalleryImage(galleryIndex + 1);
+        });
+        document.getElementById('gallery-thumbs').addEventListener('click', (event) => {
+            const thumbButton = event.target.closest('.gallery-thumb');
+            if (!thumbButton) return;
+            updateGalleryImage(Number(thumbButton.dataset.galleryThumbIndex));
+        });
+
+        document.addEventListener('keydown', (event) => {
+            const modal = document.getElementById('image-gallery-modal');
+            if (modal.classList.contains('hidden')) return;
+            if (event.key === 'Escape') {
+                closeImageGallery();
+            } else if (event.key === 'ArrowRight') {
+                updateGalleryImage(galleryIndex + 1);
+            } else if (event.key === 'ArrowLeft') {
+                updateGalleryImage(galleryIndex - 1);
+            }
+        });
+
+        eventsList.addEventListener('click', async (event) => {
+            const editButton = event.target.closest('.edit-lesson-btn');
+            if (editButton) {
+                const eventId = editButton.dataset.key;
+                const eventData = events.find((item) => item.id === eventId);
+                if (eventData) {
+                    openEventForm(eventData);
+                }
+                return;
+            }
+
+            const deleteButton = event.target.closest('.delete-lesson-btn');
+            if (deleteButton) {
+                const eventId = deleteButton.dataset.key;
+                const confirmed = window.confirm('Delete this event announcement?');
+                if (!confirmed) return;
+                await remove(ref(db, `events/${eventId}`));
+                return;
+            }
+
+            const galleryTrigger = event.target.closest('.event-image-thumb');
+            if (galleryTrigger) {
+                const galleryImagesData = galleryTrigger.dataset.galleryImages;
+                const startIndex = Number(galleryTrigger.dataset.galleryIndex || 0);
+                try {
+                    openImageGallery(JSON.parse(galleryImagesData || '[]'), startIndex);
+                } catch (error) {
+                    console.error('Failed to open event gallery.', error);
+                }
+            }
+        });
+
+        currentUser = auth.currentUser || null;
+        updateEventManagementUI();
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            updateEventManagementUI();
+            renderEvents();
+        });
+
+        loadEvents();
+    </script>
+    <script type="module" src="js/streak.js"></script>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <p class="footer-title">Connect with us</p>
+                <ul class="footer-links">
+                    <li><a href="https://www.facebook.com/MCOC33AD" target="_blank" rel="noopener">Facebook</a></li>
+                    <li><a href="https://www.youtube.com/@metrovillechurchofchrist33ad" target="_blank" rel="noopener">YouTube</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <p class="footer-title">Visit us</p>
+                <address>
+                    B2 L5 Blue Palm St., Metroville Subd.
+                    <br>Balibago, Sta. Rosa, Laguna
+                </address>
+                <a href="https://maps.app.goo.gl/aVL7m1dCXdntAj4j6" target="_blank" rel="noopener">Open map</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

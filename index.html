@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/secured/icons/logo.png">
+    <link rel="apple-touch-icon" href="assets/secured/icons/logo.png">
+    <meta name="theme-color" content="#6ec5ff">
+    <title>Home</title>
+</head>
+<body>
+
+<!--Navigation bar created by Jesimiel Daelo-->
+    <nav class="navbar">
+        <a class="navlogo" href="#">
+            Children's Ministry
+            <span id="nav-streak" class="navlogo__streak hidden" aria-label="Streak">
+                <span class="streak-icon">🔥</span>
+                <span class="streak-count">0</span>
+            </span>
+        </a>
+
+        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul class="navigation-redirect">
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="divisions.html">Division</a></li>
+            <li><a href="lessons.html">Lessons</a></li>
+            <li id="login-nav-item"><a href="login.html">Log In</a></li>
+            <li id="account-nav-item" class="nav-account-item hidden">
+                <button type="button" class="nav-account-chip" id="nav-account-chip" aria-haspopup="dialog">
+                    <span class="chip-label">Account</span>
+                    <span class="chip-meta">Open</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <section class="hero-banner">
+        <div class="hero-copy">
+            <p class="hero-tag">Welcome to a joyful place for kids</p>
+            <h1>Children's Ministry</h1>
+            <p>Where kids meet Jesus and grow in faith!</p>
+        </div>
+    </section>
+
+    <main>
+        <section class="page-section" id="divisions">
+            <div class="section-inner">
+                <p class="section-tag">Division of Classes</p>
+                <h2>Age groups designed for fun, faith, and growth</h2>
+                <div class="cards-grid">
+                    <article class="feature-card beginner-card">
+                        <h3>Beginner</h3>
+                        <p>For children 6 years old and below with playful trust-building lessons.</p>
+                    </article>
+                    <article class="feature-card primary-card">
+                        <h3>Primary</h3>
+                        <p>For ages 7–9 with Bible stories, games, and creative crafting.</p>
+                    </article>
+                    <article class="feature-card middlers-card">
+                        <h3>Middlers</h3>
+                        <p>For ages 10–12 with Bible studies and leadership development.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section page-alt" id="events">
+            <div class="section-inner stay-updated-card">
+                <div class="stay-updated-content">
+                    <p class="section-tag">Stay Updated</p>
+                    <h2>Monthly Event Announcements</h2>
+                    <div class="feature-text">
+                        <p>Each month we share a simple announcement about the next event, family gathering, or special kids activity. Keep an eye on this section for the latest updates.</p>
+                        <a class="primary-button" href="events.html">View Events</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section" id="lesson-plan">
+            <div class="section-inner">
+                <p class="section-tag">Lessons</p>
+                <h2>Previous Lessons for Little Learners</h2>
+                <div class="feature-text">
+                    <p>Open the lesson section to revisit past Bible lessons, memory verses, and class activities from previous Sundays.</p>
+                    <a class="primary-button" href="lessons.html">Open Lessons</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-database-compat.js"></script>
+    <script src="assets/firebase/secured-firebase.js"></script>
+    <script src="js/navbar.js"></script>
+    <script type="module" src="js/streak.js"></script>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <p class="footer-title">Connect with us</p>
+                <ul class="footer-links">
+                    <li><a href="https://www.facebook.com/MCOC33AD" target="_blank" rel="noopener">Facebook</a></li>
+                    <li><a href="https://www.youtube.com/@metrovillechurchofchrist33ad" target="_blank" rel="noopener">YouTube</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <p class="footer-title">Visit us</p>
+                <address>
+                    B2 L5 Blue Palm St., Metroville Subd.
+                    <br>Balibago, Sta. Rosa, Laguna
+                </address>
+                <a href="https://maps.app.goo.gl/aVL7m1dCXdntAj4j6" target="_blank" rel="noopener">Open map</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
