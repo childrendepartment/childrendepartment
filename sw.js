@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = 'children-department-cache-v1';
+﻿const CACHE_NAME = 'children-department-cache-v2';
 const ASSETS = [
     '/',
     '/index.html',
@@ -10,6 +10,7 @@ const ASSETS = [
     '/css/styles.css',
     '/js/navbar.js',
     '/js/streak.js',
+    '/js/sw-register.js',
     '/manifest.json',
     '/assets/secured/icons/logo.png'
 ];
@@ -33,6 +34,19 @@ self.addEventListener('activate', (event) => {
     );
 });
 
+const isSameOriginRequest = (request) => request.url.startsWith(self.location.origin);
+
+const fetchAndCache = (request) => {
+    return fetch(request).then((networkResponse) => {
+        if (isSameOriginRequest(request) && networkResponse && networkResponse.ok) {
+            caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, networkResponse.clone());
+            });
+        }
+        return networkResponse;
+    });
+};
+
 self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') {
         return;
@@ -40,18 +54,10 @@ self.addEventListener('fetch', (event) => {
 
     event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
-            if (cachedResponse) {
-                return cachedResponse;
-            }
-
-            return fetch(event.request)
-                .then((networkResponse) => {
-                    return caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(event.request, networkResponse.clone());
-                        return networkResponse;
-                    });
-                })
-                .catch(() => caches.match('/download.html'));
+            const networkFetch = fetchAndCache(event.request).catch(() => null);
+            return cachedResponse || networkFetch;
+        }).then((response) => {
+            return response || caches.match('/download.html');
         })
     );
 });

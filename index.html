@@ -14,10 +14,10 @@
 
 <!--Navigation bar created by Jesimiel Daelo-->
     <nav class="navbar">
-        <a class="navlogo" href="#">
+        <a class="navlogo" href="download.html">
             Children's Ministry
-            <span id="nav-streak" class="navlogo__streak hidden" aria-label="Streak">
-                <span class="streak-icon">🔥</span>
+            <span id="nav-streak" class="navlogo__streak hidden" aria-label="Streak" role="button" tabindex="0">
+                <span class="streak-icon">🧊</span>
                 <span class="streak-count">0</span>
             </span>
         </a>
@@ -98,10 +98,23 @@
         </section>
     </main>
 
+    <div id="verse-modal" class="modal-overlay hidden" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="verse-modal-title">
+            <h3 id="verse-modal-title">Verse</h3>
+            <div class="verse-embed">
+                <iframe id="verse-iframe" src="about:blank" title="Bible verse popup" loading="lazy" allowfullscreen></iframe>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="cancel-btn" id="verse-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-database-compat.js"></script>
     <script src="assets/firebase/secured-firebase.js"></script>
+    <script src="js/sw-register.js"></script>
     <script src="js/navbar.js"></script>
     <script type="module" src="js/streak.js"></script>
 

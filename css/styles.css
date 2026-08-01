@@ -1416,6 +1416,7 @@ body.modal-open {
     font-size: 0.78rem;
     font-weight: 700;
     border: 1px solid rgba(255, 255, 255, 0.45);
+    cursor: pointer;
 }
 
 .streak-icon{
@@ -1425,6 +1426,34 @@ body.modal-open {
     width: 1rem;
     height: 1rem;
     font-size: 1rem;
+}
+
+.verse-embed {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.verse-embed iframe {
+    width: 100%;
+    max-width: 250px;
+    height: 250px;
+    border: 1px solid rgba(31, 59, 98, 0.12);
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 18px 40px rgba(48, 105, 173, 0.08);
+}
+
+.verse-fallback-text {
+    margin-top: 1rem;
+    color: #1f3b61;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.verse-fallback-text a {
+    color: #4b8bea;
+    text-decoration: underline;
 }
 
 .streak-animate{

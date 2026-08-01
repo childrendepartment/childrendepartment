@@ -27,6 +27,19 @@
         </div>
     </section>
 
+    <div id="verse-modal" class="modal-overlay hidden" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="verse-modal-title">
+            <h3 id="verse-modal-title">Verse</h3>
+            <div class="verse-embed">
+                <iframe id="verse-iframe" src="about:blank" title="Bible verse popup" loading="lazy" allowfullscreen></iframe>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="cancel-btn" id="verse-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/sw-register.js"></script>
+    <script type="module" src="js/streak.js"></script>
 </body>
 </html>
