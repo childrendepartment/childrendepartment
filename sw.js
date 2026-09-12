@@ -1,17 +1,12 @@
-﻿const CACHE_NAME = 'children-department-cache-v2';
+﻿const CACHE_NAME = 'children-department-cache-v3';
 const ASSETS = [
     '/',
     '/index.html',
-    '/download.html',
     '/events.html',
     '/divisions.html',
-    '/lessons.html',
     '/login.html',
-    '/css/styles.css',
-    '/js/navbar.js',
-    '/js/streak.js',
-    '/js/sw-register.js',
-    '/manifest.json',
+    '/grow.html',
+    '/account.html',
     '/assets/secured/icons/logo.png'
 ];
 
