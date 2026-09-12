@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Children's Department | Login</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-blue: #4A90E2;
+            --warm-orange: #F5A623;
+            --vibrant-green: #7ED321;
+            --danger-red: #D0021B;
+            --bg-color: #F9FAFC;
+            --card-bg: #FFFFFF;
+            --text-dark: #333333;
+            --border-color: #E2E8F0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, rgba(74,144,226,0.1) 0%, rgba(126,211,33,0.1) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        #loader-wrapper {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-color); display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease;
+        }
+        .loader {
+            width: 50px; height: 50px; border: 6px solid #F8E71C;
+            border-top-color: var(--primary-blue); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        header { background-color: transparent; padding: 1.5rem 2rem; text-align: center; }
+        .logo { font-size: 2rem; font-weight: 900; color: var(--primary-blue); letter-spacing: 1px; }
+        .logo span { color: var(--warm-orange); }
+
+        .auth-wrapper { flex: 1; display: flex; justify-content: center; align-items: center; padding: 2rem; }
+        .auth-card {
+            background: var(--card-bg); width: 100%; max-width: 450px;
+            border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            padding: 2.5rem; position: relative; overflow: hidden;
+        }
+
+        .auth-card h2 { color: var(--primary-blue); font-size: 1.8rem; margin-bottom: 0.5rem; text-align: center; }
+        .auth-card p.subtitle { color: #666; text-align: center; margin-bottom: 1.5rem; font-size: 0.95rem; }
+
+        .btn-google {
+            width: 100%; background-color: #FFFFFF; color: #757575;
+            border: 2px solid var(--border-color); padding: 0.8rem 1rem; border-radius: 25px;
+            font-weight: 700; font-size: 1rem; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; gap: 10px;
+            transition: background 0.2s, border-color 0.2s; margin-bottom: 1.2rem;
+        }
+        .btn-google:hover { background-color: #F8FAFC; border-color: #CBD5E1; }
+        .btn-google svg { width: 20px; height: 20px; }
+
+        .divider {
+            display: flex; align-items: center; text-align: center; margin: 1.2rem 0; color: #888; font-size: 0.85rem;
+        }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
+        .divider span { padding: 0 10px; }
+
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 0.8rem 1rem; border: 2px solid var(--border-color);
+            border-radius: 10px; font-family: inherit; font-size: 1rem; transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary-blue); }
+
+        .btn-submit {
+            width: 100%; background-color: var(--vibrant-green); color: white;
+            border: none; padding: 1rem; border-radius: 25px; font-weight: 700;
+            font-size: 1.1rem; cursor: pointer; transition: transform 0.2s, background 0.3s;
+            margin-top: 0.5rem;
+        }
+        .btn-submit:hover { background-color: #6bb51c; transform: translateY(-2px); }
+        .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; transform: none; }
+
+        .auth-links { margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: #666; }
+        .auth-links span { color: var(--primary-blue); font-weight: 700; cursor: pointer; }
+        .auth-links span:hover { color: var(--warm-orange); }
+        
+        .back-home { display: block; text-align: center; margin-top: 1.5rem; font-weight: 700; color: #888; }
+        .back-home:hover { color: var(--primary-blue); }
+
+        .view-section { display: none; animation: fadeIn 0.4s ease forwards; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background-color: var(--text-dark); color: white; padding: 1rem 1.5rem; border-radius: 8px; font-weight: 600; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
+        .toast.success { border-left: 5px solid var(--vibrant-green); }
+        .toast.error { border-left: 5px solid var(--danger-red); }
+        .toast.show { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div id="loader-wrapper">
+        <div class="loader"></div>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">Children's <span>Ministry</span></a>
+    </header>
+
+    <main class="auth-wrapper">
+        <div class="auth-card">
+            
+            <!-- GOOGLE & EMAIL LOGIN VIEW -->
+            <div id="view-login" class="view-section active">
+                <h2>Welcome Back!</h2>
+                <p class="subtitle">Log in to access your account</p>
+                
+                <button type="button" class="btn-google" id="btn-google-login">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    Continue with Google
+                </button>
+
+                <div class="divider"><span>OR</span></div>
+
+                <form id="form-login">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" required placeholder="name@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required placeholder="Enter your password">
+                    </div>
+                    <div style="text-align: right; margin-top: -0.5rem; margin-bottom: 1rem;">
+                        <span style="font-size: 0.85rem; color: var(--primary-blue); cursor: pointer; font-weight: 600;" onclick="switchView('view-forgot')">Forgot Password?</span>
+                    </div>
+                    <button type="submit" class="btn-submit" id="btn-login">Log In</button>
+                </form>
+                <div class="auth-links">
+                    Don't have an account? <span onclick="switchView('view-register')">Sign Up</span>
+                </div>
+            </div>
+
+            <!-- REGISTER VIEW -->
+            <div id="view-register" class="view-section">
+                <h2>Join Our Family</h2>
+                <p class="subtitle">Create an account to get started</p>
+                
+                <button type="button" class="btn-google" id="btn-google-register">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    Sign Up with Google
+                </button>
+
+                <div class="divider"><span>OR</span></div>
+
+                <form id="form-register">
+                    <div class="form-group">
+                        <label for="reg-name">Full Name</label>
+                        <input type="text" id="reg-name" required placeholder="Adam N. Eve">
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-role">I am a...</label>
+                        <select id="reg-role" required>
+                            <option value="Student">Student</option>
+                            <option value="Teacher">Teacher</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email">Email Address</label>
+                        <input type="email" id="reg-email" required placeholder="name@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Password</label>
+                        <input type="password" id="reg-password" required placeholder="Create a password (min 6 chars)">
+                    </div>
+                    <button type="submit" class="btn-submit" id="btn-register">Create Account</button>
+                </form>
+                <div class="auth-links">
+                    Already have an account? <span onclick="switchView('view-login')">Log In</span>
+                </div>
+            </div>
+
+            <!-- FORGOT PASSWORD VIEW -->
+            <div id="view-forgot" class="view-section">
+                <h2>Reset Password</h2>
+                <p class="subtitle">We'll send you a link to reset your password</p>
+                <form id="form-forgot">
+                    <div class="form-group">
+                        <label for="forgot-email">Email Address</label>
+                        <input type="email" id="forgot-email" required placeholder="name@example.com">
+                    </div>
+                    <button type="submit" class="btn-submit" id="btn-forgot">Send Reset Link</button>
+                </form>
+                <div class="auth-links">
+                    Remembered it? <span onclick="switchView('view-login')">Back to Log In</span>
+                </div>
+            </div>
+
+            <a href="index.html" class="back-home">&larr; Return to Home</a>
+        </div>
+    </main>
+
+    <div id="toast-container"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            signInWithPopup,
+            GoogleAuthProvider,
+            updateProfile, 
+            sendPasswordResetEmail 
+        } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBsMaPJEXjJt4pMtJYeuZB7m1J2RjARqrU",
+            authDomain: "children-department-ab045.firebaseapp.com",
+            databaseURL: "https://children-department-ab045-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "children-department-ab045",
+            storageBucket: "children-department-ab045.firebasestorage.app",
+            messagingSenderId: "284100421486",
+            appId: "1:284100421486:web:fc56c486487099662b037f",
+            measurementId: "G-NNTTMWCQKK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.switchView = function(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            document.getElementById('form-login').reset();
+            document.getElementById('form-register').reset();
+            document.getElementById('form-forgot').reset();
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.replace('account.html');
+            } else {
+                const loader = document.getElementById('loader-wrapper');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+        });
+
+        async function handleGoogleAuth() {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                const userRef = ref(db, `users/${user.uid}`);
+                const snapshot = await get(userRef);
+
+                const now = new Date().toISOString();
+
+                if (!snapshot.exists()) {
+                    await update(userRef, {
+                        name: user.displayName || "Google User",
+                        email: user.email,
+                        provider: "google.com",
+                        role: "Student",
+                        division: "",
+                        createdAt: now,
+                        lastLogin: now
+                    });
+                } else {
+                    await update(userRef, {
+                        lastLogin: now,
+                        provider: "google.com"
+                    });
+                }
+            } catch (error) {
+                showToast("Google authentication failed. " + error.message, "error");
+            }
+        }
+
+        document.getElementById('btn-google-login').addEventListener('click', handleGoogleAuth);
+        document.getElementById('btn-google-register').addEventListener('click', handleGoogleAuth);
+
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login');
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                await update(ref(db, `users/${userCredential.user.uid}`), {
+                    lastLogin: new Date().toISOString(),
+                    provider: "password"
+                });
+            } catch (error) {
+                btn.disabled = false;
+                btn.textContent = 'Log In';
+                showToast('Invalid email or password.', 'error');
+            }
+        });
+
+        document.getElementById('form-register').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-register');
+            const name = document.getElementById('reg-name').value.trim();
+            const role = document.getElementById('reg-role').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Creating Account...';
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                await updateProfile(user, { displayName: name });
+
+                const now = new Date().toISOString();
+                await update(ref(db, `users/${user.uid}`), {
+                    name: name,
+                    email: email,
+                    role: role,
+                    provider: "password",
+                    division: "",
+                    createdAt: now,
+                    lastLogin: now
+                });
+            } catch (error) {
+                btn.disabled = false;
+                btn.textContent = 'Create Account';
+                showToast('Failed to create account.', 'error');
+            }
+        });
+
+        document.getElementById('form-forgot').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-forgot');
+            const email = document.getElementById('forgot-email').value;
+
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showToast('Password reset link sent to your email!');
+                setTimeout(() => window.switchView('view-login'), 3000);
+            } catch (error) {
+                showToast('Could not send reset link.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Send Reset Link';
+            }
+        });
+    </script>
+</body>
+</html>

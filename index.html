@@ -2,140 +2,394 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="assets/secured/icons/logo.png">
-    <link rel="apple-touch-icon" href="assets/secured/icons/logo.png">
-    <meta name="theme-color" content="#6ec5ff">
-    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Children's Department | Home</title>
+    
+    <!-- Google Fonts: Nunito is rounded, friendly, and excellent for children's cognitive readability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS Variables for Visual Cognitive Theme */
+        :root {
+            --primary-blue: #4A90E2;
+            --warm-orange: #F5A623;
+            --vibrant-green: #7ED321;
+            --soft-yellow: #F8E71C;
+            --bg-color: #F9FAFC;
+            --text-dark: #333333;
+            --text-light: #FFFFFF;
+            --transition-speed: 0.3s;
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Loading UI */
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 6px solid var(--soft-yellow);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        header {
+            background-color: var(--text-light);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--warm-orange);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-weight: 700;
+            color: var(--text-dark);
+            transition: color var(--transition-speed);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-links a.btn-account {
+            background-color: var(--warm-orange);
+            color: var(--text-light);
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+        }
+
+        .nav-links a.btn-account:hover {
+            background-color: #e09612;
+            color: var(--text-light);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--primary-blue);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, rgba(74,144,226,0.1) 0%, rgba(126,211,33,0.1) 100%);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            color: #555;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background-color: var(--vibrant-green);
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(126,211,33,0.3);
+            transition: transform var(--transition-speed);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--text-dark);
+            color: var(--text-light);
+            padding: 4rem 2rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--soft-yellow);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #AAAAAA;
+            transition: color var(--transition-speed);
+        }
+
+        .footer-section a:hover {
+            color: var(--text-light);
+        }
+
+        .footer-section p {
+            color: #AAAAAA;
+            margin-bottom: 0.5rem;
+        }
+
+        .map-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            color: var(--primary-blue) !important;
+            font-weight: 700;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #444;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--text-light);
+                flex-direction: column;
+                align-items: center;
+                padding: 2rem 0;
+                gap: 1.5rem;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                clip-path: circle(0% at 50% -20%);
+                transition: clip-path 0.4s ease-in-out;
+            }
+
+            .nav-links.active {
+                clip-path: circle(150% at 50% 0);
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!--Navigation bar created by Jesimiel Daelo-->
-    <nav class="navbar">
-        <a class="navlogo" href="download.html">
-            Children's Ministry
-        </a>
-            <span id="nav-streak" class="navlogo__streak hidden" aria-label="Streak" role="button" tabindex="0">
-                <span class="streak-icon">🧊</span>
-                <span class="streak-count">0</span>
-            </span>
+    <!-- Loading UI -->
+    <div id="loader-wrapper">
+        <div class="loader"></div>
+    </div>
 
-        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+    <!-- Navigation -->
+    <header>
+        <nav>
+            <div class="logo">Children's <span>Ministry</span></div>
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle Menu">
+                &#9776; <!-- Hamburger Icon -->
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="division.html">Division</a></li>
+                <li><a href="grow.html">Farm</a></li>
+                <li><a href="login.html" class="btn-account" id="nav-account">Login</a></li>
+            </ul>
+        </nav>
+    </header>
 
-        <ul class="navigation-redirect">
-            <li><a href="#" class="active">Home</a></li>
-            <li><a href="events.html">Events</a></li>
-            <li><a href="divisions.html">Division</a></li>
-            <li><a href="lessons.html">Lessons</a></li>
-            <li id="login-nav-item"><a href="login.html">Log In</a></li>
-            <li id="account-nav-item" class="nav-account-item hidden">
-                <button type="button" class="nav-account-chip" id="nav-account-chip" aria-haspopup="dialog">
-                    <span class="chip-label">Account</span>
-                    <span class="chip-meta">Open</span>
-                </button>
-            </li>
-        </ul>
-    </nav>
-
-    <section class="hero-banner">
-        <div class="hero-copy">
-            <p class="hero-tag">Welcome to a joyful place for kids</p>
-            <h1>Children's Ministry</h1>
-            <p>Where kids meet Jesus and grow in faith!</p>
-        </div>
-    </section>
-
+    <!-- Main Content -->
     <main>
-        <section class="page-section" id="divisions">
-            <div class="section-inner">
-                <p class="section-tag">Division of Classes</p>
-                <h2>Age groups designed for fun, faith, and growth</h2>
-                <div class="cards-grid">
-                    <article class="feature-card beginner-card">
-                        <h3>Beginner</h3>
-                        <p>For children 6 years old and below with playful trust-building lessons.</p>
-                    </article>
-                    <article class="feature-card primary-card">
-                        <h3>Primary</h3>
-                        <p>For ages 7–9 with Bible stories, games, and creative crafting.</p>
-                    </article>
-                    <article class="feature-card middlers-card">
-                        <h3>Middlers</h3>
-                        <p>For ages 10–12 with Bible studies and leadership development.</p>
-                    </article>
-                </div>
-            </div>
+        <section class="hero">
+            <h1>Welcome to Our Church Family!</h1>
+            <p>A fun, safe, and engaging environment where students and teachers grow together in faith and knowledge.</p>
+            <a href="terms.html" class="btn-primary">Learn More</a>
         </section>
 
-        <section class="page-section page-alt" id="events">
-            <div class="section-inner stay-updated-card">
-                <div class="stay-updated-content">
-                    <p class="section-tag">Stay Updated</p>
-                    <h2>Monthly Event Announcements</h2>
-                    <div class="feature-text">
-                        <p>Each month we share a simple announcement about the next event, family gathering, or special kids activity. Keep an eye on this section for the latest updates.</p>
-                        <a class="primary-button" href="events.html">View Events</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="page-section" id="lesson-plan">
-            <div class="section-inner">
-                <p class="section-tag">Lessons</p>
-                <h2>Previous Lessons for Little Learners</h2>
-                <div class="feature-text">
-                    <p>Open the lesson section to revisit past Bible lessons, memory verses, and class activities from previous Sundays.</p>
-                    <a class="primary-button" href="lessons.html">Open Lessons</a>
-                </div>
-            </div>
+        <!-- Placeholders for dynamic content blocks (Events/Divisions previews) -->
+        <section style="text-align: center; padding: 4rem 2rem; color: #777;">
+            <h2>Upcoming Events & Divisions</h2>
+            <p style="margin-top: 1rem;">[ No announcement posted yet. ]</p>
         </section>
     </main>
 
-    <div id="verse-modal" class="modal-overlay hidden" aria-hidden="true">
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="verse-modal-title">
-            <h3 id="verse-modal-title">Verse</h3>
-            <div class="verse-embed">
-                <iframe id="verse-iframe" src="about:blank" title="Bible verse popup" loading="lazy" allowfullscreen></iframe>
-            </div>
-            <div class="modal-actions">
-                <button type="button" class="cancel-btn" id="verse-close-btn">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-database-compat.js"></script>
-    <script src="assets/firebase/secured-firebase.js"></script>
-    <script src="js/sw-register.js"></script>
-    <script src="js/navbar.js"></script>
-    <script type="module" src="js/streak.js"></script>
-
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-block">
-                <p class="footer-title">Connect with us</p>
-                <ul class="footer-links">
-                    <li><a href="https://www.facebook.com/MCOC33AD" target="_blank" rel="noopener">Facebook</a></li>
-                    <li><a href="https://www.youtube.com/@metrovillechurchofchrist33ad" target="_blank" rel="noopener">YouTube</a></li>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>Connect with us</h3>
+                <ul>
+                    <li><a href="https://www.facebook.com/MCOC33AD" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+                    <li><a href="https://www.youtube.com/@metrovillechurchofchrist33ad" target="_blank" rel="noopener noreferrer">YouTube</a></li>
                 </ul>
             </div>
-            <div class="footer-block">
-                <p class="footer-title">Visit us</p>
-                <address>
-                    B2 L5 Blue Palm St., Metroville Subd.
-                    <br>Balibago, Sta. Rosa, Laguna
-                </address>
-                <a href="https://maps.app.goo.gl/aVL7m1dCXdntAj4j6" target="_blank" rel="noopener">Open map</a>
+            
+            <div class="footer-section">
+                <h3>Visit us</h3>
+                <p>B2 L5 Blue Palm St., Metroville Subd.</p>
+                <p>Balibago, Sta. Rosa, Laguna</p>
+                <a href="https://maps.app.goo.gl/prnvJAda997hbf9GA" class="map-link" target="_blank" rel="noopener noreferrer">Open map</a>
+            </div>
+
+            <div class="footer-section">
+                <!-- Directory: Intentionally left blank pending client content -->
             </div>
         </div>
+        <div class="footer-bottom">
+            <a href="terms.html" style="color: #AAAAAA; margin-right: 1rem;">Terms of Service</a> |
+            &copy; <span id="current-year"></span> Children's Department. All rights reserved.
+        </div>
     </footer>
+
+    <!-- JavaScript logic -->
+    <script type="module">
+        // 1. Modern Firebase Modular SDK integration (v10)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBsMaPJEXjJt4pMtJYeuZB7m1J2RjARqrU",
+            authDomain: "children-department-ab045.firebaseapp.com",
+            databaseURL: "https://children-department-ab045-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "children-department-ab045",
+            storageBucket: "children-department-ab045.firebasestorage.app",
+            messagingSenderId: "284100421486",
+            appId: "1:284100421486:web:fc56c486487099662b037f",
+            measurementId: "G-NNTTMWCQKK"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // 2. Dynamic Account Navigation
+        const accountLink = document.getElementById('nav-account');
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in
+                accountLink.textContent = 'My Account';
+                accountLink.href = 'account.html';
+            } else {
+                // User is signed out
+                accountLink.textContent = 'Login';
+                accountLink.href = 'login.html';
+            }
+        });
+
+        // 3. UI/UX Logic
+        document.addEventListener("DOMContentLoaded", () => {
+            // Set dynamic year in footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Mobile Menu Toggle
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+
+            menuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        });
+
+        // Remove Loader when page fully loads
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader-wrapper');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 500); // Matches CSS transition duration
+        });
+    </script>
 </body>
 </html>

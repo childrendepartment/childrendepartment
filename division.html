@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Children's Department | Divisions & Attendance</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Visual Cognitive Theme */
+        :root {
+            --primary-blue: #4A90E2;
+            --warm-orange: #F5A623;
+            --vibrant-green: #7ED321;
+            --danger-red: #D0021B;
+            --bg-color: #F9FAFC;
+            --card-bg: #FFFFFF;
+            --text-dark: #333333;
+            --text-light: #FFFFFF;
+            --border-color: #E2E8F0;
+            --transition-speed: 0.3s;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* Loader */
+        #loader-wrapper {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-color); display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease;
+        }
+        .loader {
+            width: 50px; height: 50px; border: 6px solid #F8E71C;
+            border-top-color: var(--primary-blue); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Navigation */
+        header { background-color: var(--text-light); box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+        nav { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--primary-blue); letter-spacing: 1px; }
+        .logo span { color: var(--warm-orange); }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { font-weight: 700; transition: color var(--transition-speed); }
+        .nav-links a:hover { color: var(--primary-blue); }
+        .btn-account { background-color: var(--primary-blue); color: var(--text-light) !important; padding: 0.5rem 1.2rem; border-radius: 25px; }
+
+        /* Main App Container */
+        .app-container { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; flex: 1; width: 100%; }
+        
+        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;}
+        .header-actions h1 { color: var(--primary-blue); font-size: 2rem; }
+        
+        /* Tabs */
+        .tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; overflow-x: auto;}
+        .tab-btn { background: none; border: none; font-size: 1.1rem; font-weight: 700; color: #888; cursor: pointer; padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.2s; white-space: nowrap;}
+        .tab-btn.active { color: var(--primary-blue); background: rgba(74,144,226,0.1); }
+        .tab-btn:hover:not(.active) { color: var(--text-dark); background: #eee; }
+
+        /* Toolbar (Month Picker & Actions) */
+        .toolbar { background: var(--card-bg); padding: 1rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;}
+        .month-picker { padding: 0.5rem; border: 2px solid var(--border-color); border-radius: 8px; font-family: inherit; font-weight: 600; color: var(--text-dark); outline: none;}
+        
+        .teacher-controls { display: none; /* Hidden by default, shown via JS if Teacher */ gap: 0.5rem; }
+        .btn { padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; transition: transform 0.2s, background-color 0.2s; font-family: inherit; font-size: 0.9rem;}
+        .btn:hover { transform: translateY(-2px); }
+        .btn-add { background-color: var(--warm-orange); color: white; }
+        .btn-remove { background-color: var(--danger-red); color: white; }
+        .btn-remove.active { background-color: #800010; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .btn-export { background-color: var(--vibrant-green); color: white; }
+        .btn-format { background-color: var(--primary-blue); color: white; }
+
+        /* Student Deletion Action Button */
+        .btn-delete-student {
+            background: rgba(208, 2, 27, 0.1);
+            color: var(--danger-red);
+            border: 1px solid var(--danger-red);
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 0.85rem;
+            font-weight: 900;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-delete-student:hover {
+            background: var(--danger-red);
+            color: white;
+        }
+
+        /* Table Wrapper for Horizontal Scroll on Mobile */
+        .table-responsive { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow-x: auto; min-height: 300px;}
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th, td { padding: 0.8rem; text-align: center; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
+        th { background-color: #f8fafc; color: var(--primary-blue); position: sticky; top: 0; z-index: 10; font-size: 0.9rem;}
+        th:first-child, td:first-child { text-align: left; font-weight: 700; min-width: 220px; position: sticky; left: 0; background: var(--card-bg); z-index: 20;}
+        th:first-child { background: #f8fafc; z-index: 30; }
+        td:last-child, th:last-child { border-right: none; }
+        
+        /* Custom Checkbox */
+        .attendance-cb { width: 20px; height: 20px; cursor: pointer; accent-color: var(--vibrant-green); }
+        .attendance-cb:disabled { cursor: not-allowed; opacity: 0.5;}
+        .attendance-cb:checked:disabled { accent-color: var(--vibrant-green);}
+
+        /* Modals */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .modal-overlay.show { opacity: 1; pointer-events: all; }
+        .modal-card { background: var(--card-bg); width: 90%; max-width: 550px; padding: 2rem; border-radius: 15px; transform: translateY(-20px); transition: transform 0.3s; }
+        .modal-overlay.show .modal-card { transform: translateY(0); }
+        .modal-card h3 { color: var(--primary-blue); margin-bottom: 1rem; }
+        .modal-card textarea { width: 100%; height: 150px; padding: 0.8rem; border: 2px solid var(--border-color); border-radius: 8px; font-family: inherit; margin-bottom: 1rem; resize: none; outline: none; line-height: 1.5;}
+        .modal-card textarea:focus { border-color: var(--primary-blue); }
+        .modal-card .help-text { font-size: 0.85rem; color: #666; margin-bottom: 1rem; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 0.8rem; }
+        .btn-cancel { background: #eee; color: #333; }
+
+        /* Toasts */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background-color: var(--text-dark); color: white; padding: 1rem 1.5rem; border-radius: 8px; font-weight: 600; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
+        .toast.success { border-left: 5px solid var(--vibrant-green); }
+        .toast.error { border-left: 5px solid var(--danger-red); }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        /* Navigation & Hamburger Styles */
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 28px;
+            height: 21px;
+            z-index: 1001;
+        }
+
+        .hamburger-btn span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: var(--text-dark);
+            border-radius: 3px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        /* Responsive Menu for Mobile Devices */
+        @media (max-width: 768px) {
+            .hamburger-btn {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%; /* Hide off-screen initially */
+                width: 75%;
+                max-width: 300px;
+                height: 100vh;
+                background-color: var(--card-bg);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+                transition: right 0.3s ease-in-out;
+                z-index: 1000;
+                gap: 2.5rem;
+            }
+
+            /* Active state when menu is open */
+            .nav-links.active {
+                right: 0;
+            }
+
+            /* Animate Hamburger icon into an 'X' shape when active */
+            .hamburger-btn.active span:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+            .hamburger-btn.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger-btn.active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader-wrapper">
+        <div class="loader"></div>
+    </div>
+
+    <header>
+        <nav>
+            <div class="logo">Children's <span>Ministry</span></div>
+            
+            <!-- Hamburger Toggle Button -->
+            <button class="hamburger-btn" id="hamburger-toggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="division.html" style="color: var(--primary-blue);">Division</a></li>
+                <li><a href="grow.html">Farm</a></li>
+                <li><a href="account.html" class="btn-account" id="nav-account">My Account</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="app-container">
+        <div class="header-actions">
+            <h1>Divisions & Attendance</h1>
+            <span id="role-badge" style="background: #eee; padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem; color: #555;">Loading Role...</span>
+        </div>
+
+        <div class="tabs" id="division-tabs">
+            <button class="tab-btn active" data-div="Beginner">Beginner</button>
+            <button class="tab-btn" data-div="Primary">Primary</button>
+            <button class="tab-btn" data-div="Middler">Middler</button>
+        </div>
+
+        <div class="toolbar">
+            <div>
+                <input type="month" id="month-picker" class="month-picker">
+            </div>
+            <div class="teacher-controls" id="teacher-controls">
+                <button class="btn btn-add" onclick="openModal()">+ Add Students</button>
+                <button class="btn btn-remove" id="btn-toggle-remove">Remove Student</button>
+                <button class="btn btn-export" id="btn-export">Download CSV</button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table id="attendance-table">
+                <thead id="table-head">
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="add-modal">
+        <div class="modal-card">
+            <h3>Add Students to <span id="modal-div-name">Beginner</span></h3>
+            <p class="help-text">Type names separated by new lines. Click <strong>Auto-Format</strong> to convert multiple names to "Surname, First Second" before saving.</p>
+            <textarea id="student-names-input" placeholder="e.g. Adam N. Eve&#10;Adan A. T. Eva"></textarea>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-format" id="btn-format-names">Auto-Format</button>
+                <button class="btn btn-add" id="btn-save-students">Save Students</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+        const hamburgerToggle = document.getElementById('hamburger-toggle');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburgerToggle.addEventListener('click', () => {
+            hamburgerToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu automatically when clicking any navigation link on mobile
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburgerToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { getDatabase, ref, get, set, push, remove } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBsMaPJEXjJt4pMtJYeuZB7m1J2RjARqrU",
+            authDomain: "children-department-ab045.firebaseapp.com",
+            databaseURL: "https://children-department-ab045-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "children-department-ab045",
+            storageBucket: "children-department-ab045.firebasestorage.app",
+            messagingSenderId: "284100421486",
+            appId: "1:284100421486:web:fc56c486487099662b037f",
+            measurementId: "G-NNTTMWCQKK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // Security Utility: Escape HTML to prevent XSS
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return str;
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+
+        let currentUserRole = 'Student'; 
+        let currentDivision = 'Beginner';
+        let currentMonth = '';
+        let sundays = []; 
+        let studentsList = {};
+        let attendanceData = {};
+        let isRemoveMode = false;
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        currentMonth = `${year}-${month}`;
+        document.getElementById('month-picker').value = currentMonth;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.replace('login.html');
+                return;
+            }
+
+            try {
+                const snapshot = await get(ref(db, `users/${user.uid}`));
+                if (snapshot.exists()) {
+                    currentUserRole = snapshot.val().role || 'Student';
+                }
+                
+                document.getElementById('role-badge').textContent = `Access: ${currentUserRole}`;
+
+                if (currentUserRole === 'Teacher') {
+                    document.getElementById('teacher-controls').style.display = 'flex';
+                }
+
+                await loadDivisionData();
+
+            } catch (error) {
+                console.error("Auth/Role Error:", error);
+                showToast("Failed to verify credentials.", "error");
+            } finally {
+                const loader = document.getElementById('loader-wrapper');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+        });
+
+        document.getElementById('division-tabs').addEventListener('click', async (e) => {
+            if (e.target.classList.contains('tab-btn')) {
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                currentDivision = e.target.getAttribute('data-div');
+                document.getElementById('modal-div-name').textContent = currentDivision;
+                await loadDivisionData();
+            }
+        });
+
+        document.getElementById('month-picker').addEventListener('change', async (e) => {
+            currentMonth = e.target.value;
+            await loadDivisionData();
+        });
+
+        document.getElementById('btn-toggle-remove').addEventListener('click', () => {
+            isRemoveMode = !isRemoveMode;
+            const btn = document.getElementById('btn-toggle-remove');
+            if (isRemoveMode) {
+                btn.classList.add('active');
+                btn.textContent = 'Done Removing';
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = 'Remove Student';
+            }
+            renderTable();
+        });
+
+        async function loadDivisionData() {
+            const [y, m] = currentMonth.split('-');
+            const daysInMonth = new Date(y, m, 0).getDate();
+            
+            sundays = [];
+            for (let i = 1; i <= daysInMonth; i++) {
+                const d = new Date(y, m - 1, i);
+                if (d.getDay() === 0) {
+                    sundays.push(i);
+                }
+            }
+
+            const studentSnap = await get(ref(db, `divisions/${currentDivision}/students`));
+            studentsList = studentSnap.exists() ? studentSnap.val() : {};
+
+            const attSnap = await get(ref(db, `attendance/${currentDivision}/${currentMonth}`));
+            attendanceData = attSnap.exists() ? attSnap.val() : {};
+
+            renderTable();
+        }
+
+        function renderTable() {
+            const thead = document.getElementById('table-head');
+            const tbody = document.getElementById('table-body');
+            const [y, m] = currentMonth.split('-');
+            
+            let headHTML = `<tr><th>Student Name</th>`;
+            for (const day of sundays) {
+                headHTML += `<th>Sun, ${m}/${String(day).padStart(2, '0')}</th>`;
+            }
+            headHTML += `</tr>`;
+            thead.innerHTML = headHTML;
+
+            let bodyHTML = '';
+            const isReadOnly = currentUserRole !== 'Teacher' ? 'disabled' : '';
+
+            if (Object.keys(studentsList).length === 0) {
+                bodyHTML = `<tr><td colspan="${sundays.length + 1}" style="padding: 2rem; color: #888;">No students added yet.</td></tr>`;
+            } else {
+                for (const [studentId, data] of Object.entries(studentsList)) {
+                    let removeBtnHTML = '';
+                    if (currentUserRole === 'Teacher' && isRemoveMode) {
+                        removeBtnHTML = `<button class="btn-delete-student" data-student-id="${studentId}" title="Remove Student">&times;</button>`;
+                    }
+
+                    // SECURED: Escaping user input before DOM injection
+                    bodyHTML += `<tr><td>${removeBtnHTML}${escapeHTML(data.name)}</td>`;
+                    
+                    for (const day of sundays) {
+                        const dayStr = String(day).padStart(2, '0');
+                        const isPresent = attendanceData[studentId] && attendanceData[studentId][dayStr] ? 'checked' : '';
+                        
+                        bodyHTML += `<td>
+                            <input type="checkbox" class="attendance-cb" 
+                                data-student="${studentId}" 
+                                data-day="${dayStr}" 
+                                ${isPresent} ${isReadOnly}>
+                        </td>`;
+                    }
+                    bodyHTML += `</tr>`;
+                }
+            }
+            tbody.innerHTML = bodyHTML;
+
+            if (currentUserRole === 'Teacher') {
+                document.querySelectorAll('.attendance-cb').forEach(cb => {
+                    cb.addEventListener('change', handleAttendanceToggle);
+                });
+                
+                if (isRemoveMode) {
+                    document.querySelectorAll('.btn-delete-student').forEach(btn => {
+                        btn.addEventListener('click', handleDeleteStudent);
+                    });
+                }
+            }
+        }
+
+        async function handleAttendanceToggle(e) {
+            const cb = e.target;
+            const studentId = cb.getAttribute('data-student');
+            const dayStr = cb.getAttribute('data-day');
+            const isPresent = cb.checked;
+
+            try {
+                const attRef = ref(db, `attendance/${currentDivision}/${currentMonth}/${studentId}/${dayStr}`);
+                if (isPresent) {
+                    await set(attRef, true);
+                } else {
+                    await remove(attRef);
+                }
+            } catch (error) {
+                showToast("Failed to save attendance.", "error");
+                cb.checked = !isPresent; 
+            }
+        }
+
+        async function handleDeleteStudent(e) {
+            const studentId = e.target.getAttribute('data-student-id');
+            const studentName = studentsList[studentId]?.name || 'Student';
+
+            if (!confirm(`Are you sure you want to remove "${studentName}"?`)) {
+                return;
+            }
+
+            try {
+                // Delete student entry from current division
+                await remove(ref(db, `divisions/${currentDivision}/students/${studentId}`));
+                
+                // Delete student's attendance history for the active month
+                await remove(ref(db, `attendance/${currentDivision}/${currentMonth}/${studentId}`));
+
+                showToast(`Removed "${studentName}" successfully.`, "success");
+                await loadDivisionData();
+            } catch (error) {
+                console.error("Delete Error:", error);
+                showToast("Failed to remove student.", "error");
+            }
+        }
+
+        window.openModal = () => document.getElementById('add-modal').classList.add('show');
+        window.closeModal = () => {
+            document.getElementById('add-modal').classList.remove('show');
+            document.getElementById('student-names-input').value = '';
+        };
+
+        document.getElementById('btn-format-names').addEventListener('click', () => {
+            const inputEl = document.getElementById('student-names-input');
+            const input = inputEl.value;
+            if (!input.trim()) return;
+
+            const namesArray = input.split(/\n+/).map(name => name.trim()).filter(name => name);
+            
+            const formattedNames = namesArray.map(name => {
+                if (name.includes(',')) return name;
+                const parts = name.split(/\s+/);
+                if (parts.length > 1) {
+                    const surname = parts.pop();
+                    return `${surname}, ${parts.join(' ')}`;
+                }
+                return name;
+            });
+
+            inputEl.value = formattedNames.join('\n');
+            showToast("Names formatted! You can review or edit them before saving.", "success");
+        });
+
+        document.getElementById('btn-save-students').addEventListener('click', async () => {
+            const btn = document.getElementById('btn-save-students');
+            const input = document.getElementById('student-names-input').value;
+            
+            if (!input.trim()) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            const namesArray = input.split(/\n+/).map(name => name.trim()).filter(name => name);
+
+            try {
+                const promises = namesArray.map(name => {
+                    const newStudentRef = push(ref(db, `divisions/${currentDivision}/students`));
+                    return set(newStudentRef, { name: name });
+                });
+
+                await Promise.all(promises);
+
+                showToast(`Successfully added ${namesArray.length} student(s)!`);
+                closeModal();
+                await loadDivisionData(); 
+            } catch (error) {
+                console.error(error);
+                showToast("Permission denied. Ensure your role is verified.", "error");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save Students';
+            }
+        });
+
+        document.getElementById('btn-export').addEventListener('click', () => {
+            if (Object.keys(studentsList).length === 0) {
+                showToast("No data to export.", "error");
+                return;
+            }
+
+            const [y, m] = currentMonth.split('-');
+            let csvContent = "Student Name,";
+            
+            for (const day of sundays) {
+                csvContent += `${m}/${String(day).padStart(2, '0')},`;
+            }
+            csvContent += "Total Present\n";
+
+            for (const [studentId, data] of Object.entries(studentsList)) {
+                csvContent += `"${data.name}",`;
+                
+                let totalPresent = 0;
+                for (const day of sundays) {
+                    const dayStr = String(day).padStart(2, '0');
+                    const isPresent = attendanceData[studentId] && attendanceData[studentId][dayStr] ? true : false;
+                    
+                    csvContent += isPresent ? "P," : "A,";
+                    if (isPresent) totalPresent++;
+                }
+                csvContent += `${totalPresent}\n`;
+            }
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Attendance_${currentDivision}_${currentMonth}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+</body>
+</html>

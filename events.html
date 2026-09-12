@@ -3,638 +3,581 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="assets/secured/icons/logo.png">
-    <link rel="apple-touch-icon" href="assets/secured/icons/logo.png">
-    <meta name="theme-color" content="#6ec5ff">
-    <title>Events - Children's Ministry</title>
+    <title>Children's Ministry | Events</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-blue: #4A90E2;
+            --warm-orange: #F5A623;
+            --vibrant-green: #7ED321;
+            --danger-red: #D0021B;
+            --bg-color: #F9FAFC;
+            --card-bg: #FFFFFF;
+            --text-dark: #333333;
+            --text-light: #FFFFFF;
+            --border-color: #E2E8F0;
+            --transition-speed: 0.3s;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* Loader */
+        #loader-wrapper {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-color); display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease;
+        }
+        .loader {
+            width: 50px; height: 50px; border: 6px solid #F8E71C;
+            border-top-color: var(--primary-blue); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Navigation */
+        header { background-color: var(--card-bg); box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+        nav { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--primary-blue); letter-spacing: 1px; }
+        .logo span { color: var(--warm-orange); }
+        
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { font-weight: 700; transition: color var(--transition-speed); }
+        .nav-links a:hover { color: var(--primary-blue); }
+        .btn-account { background-color: var(--primary-blue); color: var(--text-light) !important; padding: 0.5rem 1.2rem; border-radius: 25px; }
+
+        /* Hamburger Toggle Button Styling */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .hamburger span {
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-blue);
+            border-radius: 3px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        /* Main Container */
+        .container { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; flex: 1; width: 100%; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .page-header h1 { font-size: 2.2rem; font-weight: 900; color: var(--primary-blue); }
+
+        /* Teacher Upload Panel */
+        .teacher-panel {
+            background: var(--card-bg);
+            border: 2px dashed var(--primary-blue);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            display: none; 
+            box-shadow: 0 8px 20px rgba(74,144,226,0.08);
+        }
+
+        .teacher-panel h2 {
+            color: var(--primary-blue);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .teacher-panel p.sub-text {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-dark); }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .file-upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            background: #F8FAFC;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .file-upload-zone:hover { border-color: var(--warm-orange); background: #FFFDF9; }
+        .file-upload-zone input[type="file"] { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; top: 0; left: 0; }
+        
+        .preview-img {
+            max-width: 100%;
+            max-height: 160px;
+            border-radius: 8px;
+            object-fit: cover;
+            display: none;
+        }
+
+        .btn-publish {
+            grid-column: span 2;
+            background-color: var(--vibrant-green);
+            color: white;
+            border: none;
+            padding: 0.9rem;
+            border-radius: 25px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .btn-publish:hover { background-color: #6bb51c; transform: translateY(-2px); }
+        .btn-publish:disabled { background-color: #ccc; cursor: not-allowed; transform: none; }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .event-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .event-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+
+        .event-banner {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #E2E8F0;
+        }
+
+        .event-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+        .event-tag {
+            align-self: flex-start;
+            background: rgba(74,144,226,0.15);
+            color: var(--primary-blue);
+            font-weight: 800;
+            font-size: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+        }
+        .event-title { font-size: 1.3rem; font-weight: 900; color: var(--text-dark); margin-bottom: 0.5rem; }
+        .event-date { font-size: 0.9rem; font-weight: 700; color: var(--warm-orange); margin-bottom: 0.8rem; }
+        .event-desc { font-size: 0.95rem; color: #555; line-height: 1.5; flex: 1; }
+
+        .btn-delete-event {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(208, 2, 27, 0.9);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background-color: var(--text-dark); color: white; padding: 1rem 1.5rem; border-radius: 8px; font-weight: 600; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
+        .toast.success { border-left: 5px solid var(--vibrant-green); }
+        .toast.error { border-left: 5px solid var(--danger-red); }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        /* Responsive Styles for Mobile Screens */
+        @media (max-width: 768px) {
+            .upload-grid { grid-template-columns: 1fr; }
+            .btn-publish { grid-column: span 1; }
+
+            /* Show Hamburger icon */
+            .hamburger { display: flex; }
+
+            /* Transform .nav-links into a mobile overlay dropdown menu */
+            .nav-links {
+                position: fixed;
+                top: 70px; /* Adjust depending on header height */
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background-color: var(--card-bg);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding-top: 3rem;
+                gap: 2rem;
+                transition: left var(--transition-speed) ease;
+                box-shadow: 0 10px 10px rgba(0,0,0,0.05);
+            }
+
+            /* Active state toggled via JS */
+            .nav-links.active {
+                left: 0;
+            }
+
+            /* Animate Hamburger into an 'X' shape when active */
+            .hamburger.active span:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger.active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <a class="navlogo" href="#">
-            Children's Ministry
-        </a>
+    <div id="loader-wrapper">
+        <div class="loader"></div>
+    </div>
 
-        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+    <header>
+        <nav>
+            <div class="logo">Children's <span>Ministry</span></div>
+            
+            <!-- Hamburger Toggle Button -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
-        <ul class="navigation-redirect">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="events.html" class="active">Events</a></li>
-            <li><a href="divisions.html">Division</a></li>
-            <li><a href="lessons.html">Lessons</a></li>
-            <li id="login-nav-item"><a href="login.html">Log In</a></li>
-            <li id="account-nav-item" class="nav-account-item hidden">
-                <button type="button" class="nav-account-chip" id="nav-account-chip" aria-haspopup="dialog">
-                    <span class="chip-label">Account</span>
-                    <span class="chip-meta">Open</span>
-                </button>
-            </li>
-        </ul>
-    </nav>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="events.html" style="color: var(--primary-blue);">Events</a></li>
+                <li><a href="division.html">Division</a></li>
+                <li><a href="grow.html">Farm</a></li>
+                <li><a href="account.html" class="btn-account" id="nav-account">My Account</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <section class="hero-banner event-hero">
-        <div class="hero-copy">
-            <p class="hero-tag">Children's Ministry</p>
-            <h1>Event announcements & updates</h1>
-            <p>Check upcoming gatherings, service events, and activities with full attachments for the community.</p>
+    <main class="container">
+        <div class="page-header">
+            <h1>Upcoming Ministry Events</h1>
+            <span id="role-badge" style="background: #E2E8F0; padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem; color: #555;">Checking access...</span>
         </div>
-    </section>
 
-    <main class="events-page">
-        <div class="events-shell">
-            <section class="events-intro">
-                <div class="events-toolbar">
-                    <div class="toolbar-copy">
-                        <p class="section-tag">Events</p>
-                        <h1>Upcoming announcements</h1>
-                        <p>Use this space to publish event news, links, and images for children and families.</p>
-                    </div>
-                    <button type="button" class="add-lesson-btn hidden" id="add-event-btn">Add Event</button>
-                </div>
-            </section>
-
-            <section class="lesson-form-panel hidden" id="event-form-panel">
-                <div class="form-heading">
-                    <div class="form-heading-row">
-                        <div>
-                            <h2 id="event-form-title">Add an event</h2>
-                            <p id="event-form-caption">Use this form to publish a new event announcement.</p>
-                        </div>
-                        <button type="button" class="close-form-btn" id="close-event-form-btn" aria-label="Close event form">×</button>
-                    </div>
-                </div>
-                <form id="event-form" class="lesson-form">
-                    <div class="lesson-form-grid">
+        <section class="teacher-panel" id="teacher-panel">
+            <h2>Teacher Event Creation Control</h2>
+            <p class="sub-text">Upload new events here. Students will immediately see these on their event feed.</p>
+            
+            <form id="form-upload-event">
+                <div class="upload-grid">
+                    <div>
                         <div class="form-group">
-                            <label for="event-title">Title</label>
-                            <input id="event-title" name="title" type="text" placeholder="Family Fun Day" required>
+                            <label for="event-title">Event Title</label>
+                            <input type="text" id="event-title" required placeholder="e.g. Vacation Bible School 2026">
                         </div>
                         <div class="form-group">
-                            <label for="event-date">Date</label>
-                            <input id="event-date" name="date" type="date" required>
+                            <label for="event-date">Event Date & Time</label>
+                            <input type="datetime-local" id="event-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="event-target">Target Division</label>
+                            <select id="event-target">
+                                <option value="All Divisions">All Divisions</option>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Primary">Primary</option>
+                                <option value="Middler">Middler</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="event-location">Location</label>
-                        <input id="event-location" name="location" type="text" placeholder="Church Hall" required>
+                    <div>
+                        <div class="form-group">
+                            <label>Event Poster Image</label>
+                            <div class="file-upload-zone" id="drop-zone">
+                                <span id="upload-prompt">Click or drag an image here (Max 2MB)</span>
+                                <img id="preview-img" class="preview-img" alt="Event Preview">
+                                <input type="file" id="event-image" accept="image/png, image/jpeg, image/jpg" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="event-desc">Event Description</label>
+                            <textarea id="event-desc" rows="3" required placeholder="Describe what the students should bring or expect..."></textarea>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="event-description">Description</label>
-                        <textarea id="event-description" name="description" placeholder="Describe the event and what families should expect..." required></textarea>
-                    </div>
+                    <button type="submit" class="btn-publish" id="btn-publish">Publish Event</button>
+                </div>
+            </form>
+        </section>
 
-                    <div class="form-group">
-                        <label for="event-links">Event links (one per line)</label>
-                        <textarea id="event-links" name="links" placeholder="https://example.com/register"></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="event-images">Upload event images</label>
-                        <input id="event-images" name="images" type="file" accept="image/*" multiple>
-                        <small>Upload one or more images to show in the event announcement.</small>
-                    </div>
-
-                    <div class="form-group existing-images-panel hidden" id="existing-images-panel">
-                        <p class="existing-images-label">Current images</p>
-                        <div class="event-images" id="existing-event-images"></div>
-                    </div>
-
-                    <button type="submit" class="submit-lesson-btn">Publish Event</button>
-                </form>
-            </section>
-
-            <section class="lessons-list" id="events-list" aria-live="polite"></section>
+        <div class="events-grid" id="events-grid">
         </div>
     </main>
 
-    <div class="image-gallery-modal hidden" id="image-gallery-modal" aria-hidden="true">
-        <div class="image-gallery-backdrop" data-close-gallery="true"></div>
-        <div class="image-gallery-dialog" role="dialog" aria-modal="true" aria-label="Event images">
-            <button type="button" class="gallery-close-btn" id="gallery-close-btn" aria-label="Close gallery">×</button>
-            <div class="gallery-main">
-                <button type="button" class="gallery-nav gallery-prev" id="gallery-prev-btn" aria-label="Previous image">‹</button>
-                <div class="gallery-stage">
-                    <img id="gallery-image" src="" alt="Event image">
-                </div>
-                <button type="button" class="gallery-nav gallery-next" id="gallery-next-btn" aria-label="Next image">›</button>
-            </div>
-            <div class="gallery-thumbs" id="gallery-thumbs"></div>
-        </div>
-    </div>
+    <div id="toast-container"></div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.2/firebase-database-compat.js"></script>
-    <script src="js/navbar.js"></script>
+    <script>
+        // Hamburger Menu Interactivity Script
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu automatically when clicking any nav link on mobile
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+    </script>
 
     <script type="module">
-        import {
-            auth,
-            db,
-            ref,
-            onValue,
-            push,
-            remove,
-            update,
-            set,
-            onAuthStateChanged
-        } from './assets/firebase/secured-firebase.js';
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { getDatabase, ref as dbRef, get, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js";
 
-        const ALLOWED_UIDS = new Set([
-            'W1kKuGtCwWeF9n4Vqv9MAdhbn6g1',
-            'tGL8dRTcAIfzUjuWInW6rTAn3Ez1'
-        ]);
-        const eventsList = document.getElementById('events-list');
-        const addEventButton = document.getElementById('add-event-btn');
-        const eventFormPanel = document.getElementById('event-form-panel');
-        const eventForm = document.getElementById('event-form');
-        const eventFormTitle = document.getElementById('event-form-title');
-        const eventFormCaption = document.getElementById('event-form-caption');
-        const closeEventFormButton = document.getElementById('close-event-form-btn');
-        const existingImagesPanel = document.getElementById('existing-images-panel');
-        const existingImagesContainer = document.getElementById('existing-event-images');
-
-        let currentUser = null;
-        let events = [];
-        let editingEventId = null;
-        let existingEventImages = [];
-        let galleryImages = [];
-        let galleryIndex = 0;
-
-        const escapeHtml = (value) => String(value || '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-
-        const formatDate = (value) => {
-            if (!value) return 'Date not set';
-            const parsed = new Date(value);
-            if (Number.isNaN(parsed.getTime())) return value;
-            return parsed.toLocaleDateString(undefined, {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
+        const firebaseConfig = {
+            apiKey: "AIzaSyBsMaPJEXjJt4pMtJYeuZB7m1J2RjARqrU",
+            authDomain: "children-department-ab045.firebaseapp.com",
+            databaseURL: "https://children-department-ab045-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "children-department-ab045",
+            storageBucket: "children-department-ab045.firebasestorage.app",
+            messagingSenderId: "284100421486",
+            appId: "1:284100421486:web:fc56c486487099662b037f",
+            measurementId: "G-NNTTMWCQKK"
         };
 
-        const normalizeLink = (value) => {
-            if (!value) return '';
-            const trimmed = value.trim();
-            if (!trimmed) return '';
-            if (/^https?:\/\//i.test(trimmed)) {
-                return trimmed;
-            }
-            return `https://${trimmed}`;
-        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const storage = getStorage(app);
 
-        const parseLinks = (value) => {
-            return String(value || '')
-                .split(/\r?\n/)
-                .map(normalizeLink)
-                .filter(Boolean);
-        };
+        // Security Utility: Escape HTML to prevent XSS
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return str;
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
 
-        const canManageEvent = () => ALLOWED_UIDS.has(currentUser?.uid);
+        let currentUserRole = 'Student';
 
-        const updateEventManagementUI = () => {
-            const isAdmin = canManageEvent();
-            addEventButton.classList.add('hidden');
-            addEventButton.style.display = 'none';
-            if (isAdmin) {
-                addEventButton.classList.remove('hidden');
-                addEventButton.style.display = '';
-            }
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
-            if (!isAdmin) {
-                eventFormPanel.classList.add('hidden');
-                if (editingEventId) {
-                    resetEventForm();
+        const imageInput = document.getElementById('event-image');
+        const previewImg = document.getElementById('preview-img');
+        const uploadPrompt = document.getElementById('upload-prompt');
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast("Image file size must be less than 2MB", "error");
+                    imageInput.value = "";
+                    return;
                 }
+                previewImg.src = URL.createObjectURL(file);
+                previewImg.style.display = 'block';
+                uploadPrompt.style.display = 'none';
             }
-        };
-
-        const resetEventForm = () => {
-            eventForm.reset();
-            editingEventId = null;
-            existingEventImages = [];
-            eventFormTitle.textContent = 'Add an event';
-            eventFormCaption.textContent = 'Use this form to publish a new event announcement.';
-            document.querySelector('.submit-lesson-btn').textContent = 'Publish Event';
-            existingImagesPanel.classList.add('hidden');
-            existingImagesContainer.innerHTML = '';
-        };
-
-        const renderExistingImages = () => {
-            if (!existingEventImages.length) {
-                existingImagesPanel.classList.add('hidden');
-                existingImagesContainer.innerHTML = '';
-                return;
-            }
-            existingImagesPanel.classList.remove('hidden');
-            existingImagesContainer.innerHTML = existingEventImages.map((url) => `
-                <div class="event-image-thumb">
-                    <img src="${escapeHtml(url)}" alt="Existing event image">
-                </div>
-            `).join('');
-        };
-
-        const openEventForm = (eventData = null) => {
-            if (eventData) {
-                editingEventId = eventData.id;
-                document.getElementById('event-title').value = eventData.title || '';
-                document.getElementById('event-date').value = eventData.date || '';
-                document.getElementById('event-location').value = eventData.location || '';
-                document.getElementById('event-description').value = eventData.description || '';
-                document.getElementById('event-links').value = (eventData.links || []).join('\n');
-                existingEventImages = eventData.imageUrls || [];
-                renderExistingImages();
-                eventFormTitle.textContent = 'Edit event';
-                eventFormCaption.textContent = 'Update the event details for this announcement.';
-                document.querySelector('.submit-lesson-btn').textContent = 'Save Changes';
-            } else {
-                resetEventForm();
-            }
-
-            eventFormPanel.classList.remove('hidden');
-            eventFormPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        };
-
-        const readBlobAsDataURL = (blob) => {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = () => reject(new Error('Failed to read compressed image.'));
-                reader.readAsDataURL(blob);
-            });
-        };
-
-        const compressImageFile = async (file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) => {
-            return new Promise((resolve, reject) => {
-                const image = new Image();
-                const objectUrl = URL.createObjectURL(file);
-                image.onload = async () => {
-                    URL.revokeObjectURL(objectUrl);
-                    let width = image.width;
-                    let height = image.height;
-                    const ratio = Math.min(1, maxWidth / width, maxHeight / height);
-                    width = Math.round(width * ratio);
-                    height = Math.round(height * ratio);
-
-                    const canvas = document.createElement('canvas');
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(image, 0, 0, width, height);
-
-                    canvas.toBlob(async (blob) => {
-                        if (!blob) {
-                            reject(new Error('Image compression failed.'));
-                            return;
-                        }
-                        try {
-                            const dataUrl = await readBlobAsDataURL(blob);
-                            resolve(dataUrl);
-                        } catch (error) {
-                            reject(error);
-                        }
-                    }, 'image/jpeg', quality);
-                };
-                image.onerror = () => {
-                    URL.revokeObjectURL(objectUrl);
-                    reject(new Error('Unable to load image for compression.'));
-                };
-                image.src = objectUrl;
-            });
-        };
-
-        const uploadEventImages = async (files) => {
-            if (!files?.length) return [];
-            const uploads = Array.from(files).map((file) => compressImageFile(file));
-            return Promise.all(uploads);
-        };
-
-        const openImageGallery = (images, startIndex = 0) => {
-            if (!images?.length) return;
-            galleryImages = images;
-            galleryIndex = Math.min(Math.max(0, startIndex), images.length - 1);
-            const modal = document.getElementById('image-gallery-modal');
-            const galleryImage = document.getElementById('gallery-image');
-            const galleryThumbs = document.getElementById('gallery-thumbs');
-            galleryImage.src = '';
-            galleryImage.alt = `Event image ${galleryIndex + 1}`;
-            galleryThumbs.innerHTML = galleryImages.map((url, index) => `
-                <button type="button" class="gallery-thumb ${index === galleryIndex ? 'active' : ''}" data-gallery-thumb-index="${index}" aria-label="Show image ${index + 1}">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-src="${escapeHtml(url)}" alt="Event image ${index + 1}" loading="lazy">
-                </button>
-            `).join('');
-            galleryImage.src = galleryImages[galleryIndex];
-            galleryThumbs.querySelectorAll('img[data-src]').forEach((img) => {
-                img.src = img.dataset.src;
-                delete img.dataset.src;
-            });
-            modal.classList.remove('hidden');
-            modal.setAttribute('aria-hidden', 'false');
-            document.body.classList.add('modal-open');
-        };
-
-        const closeImageGallery = () => {
-            const modal = document.getElementById('image-gallery-modal');
-            modal.classList.add('hidden');
-            modal.setAttribute('aria-hidden', 'true');
-            document.body.classList.remove('modal-open');
-        };
-
-        const updateGalleryImage = (nextIndex) => {
-            galleryIndex = Math.min(Math.max(0, nextIndex), galleryImages.length - 1);
-            const galleryImage = document.getElementById('gallery-image');
-            const galleryThumbs = document.getElementById('gallery-thumbs');
-            galleryImage.src = galleryImages[galleryIndex];
-            galleryImage.alt = `Event image ${galleryIndex + 1}`;
-            galleryThumbs.querySelectorAll('.gallery-thumb').forEach((thumb, index) => {
-                thumb.classList.toggle('active', index === galleryIndex);
-            });
-        };
-
-        const setupLazyImages = () => {
-            const pendingPlaceholders = eventsList.querySelectorAll('.event-image-placeholder[data-preview-url]');
-            if (!pendingPlaceholders.length) return;
-
-            const loadPlaceholderImage = (placeholder) => {
-                const src = placeholder.dataset.previewUrl;
-                if (!src) return;
-                const image = document.createElement('img');
-                image.src = src;
-                image.alt = 'Event image';
-                image.loading = 'lazy';
-                image.className = 'event-preview-image';
-                placeholder.replaceWith(image);
-            };
-
-            if (!('IntersectionObserver' in window)) {
-                pendingPlaceholders.forEach((placeholder) => loadPlaceholderImage(placeholder));
-                return;
-            }
-
-            const observer = new IntersectionObserver((entries, currentObserver) => {
-                entries.forEach((entry) => {
-                    if (!entry.isIntersecting) return;
-                    loadPlaceholderImage(entry.target);
-                    currentObserver.unobserve(entry.target);
-                });
-            }, { rootMargin: '180px 0px' });
-
-            pendingPlaceholders.forEach((placeholder) => observer.observe(placeholder));
-        };
-
-        const renderEvents = () => {
-            if (!events.length) {
-                eventsList.innerHTML = `
-                    <div class="empty-state">
-                        <h3>No events yet</h3>
-                        <p>Publish the first event announcement to keep the kids ministry informed.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            eventsList.innerHTML = events.map((eventData) => {
-                const imageUrls = eventData.imageUrls || [];
-                const previewImages = imageUrls.slice(0, Math.min(3, imageUrls.length));
-                return `
-                    <article class="lesson-card">
-                        <div class="lesson-card-header">
-                            <div>
-                                <h3>${escapeHtml(eventData.title || 'Untitled Event')}</h3>
-                                <p class="lesson-meta">${escapeHtml(formatDate(eventData.date))}${eventData.location ? ` • ${escapeHtml(eventData.location)}` : ''}</p>
-                            </div>
-                            ${canManageEvent() ? `
-                                <div class="lesson-card-actions">
-                                    <button type="button" class="edit-lesson-btn" data-key="${escapeHtml(eventData.id)}">Edit</button>
-                                    <button type="button" class="delete-lesson-btn" data-key="${escapeHtml(eventData.id)}">Delete</button>
-                                </div>
-                            ` : ''}
-                        </div>
-                        <p class="lesson-content">${escapeHtml(eventData.description || 'No event description provided.')}</p>
-                        ${(eventData.links || []).length ? `
-                            <div class="event-links">
-                                <p class="attachment-label">Event links</p>
-                                <ul>
-                                    ${eventData.links.map((link) => `
-                                        <li class="attachment-item"><a href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link)}</a></li>
-                                    `).join('')}
-                                </ul>
-                            </div>
-                        ` : ''}
-                        ${imageUrls.length ? `
-                            <div class="event-images ${imageUrls.length > 1 ? 'multi' : ''}">
-                                ${previewImages.map((url, index) => `
-                                    <button type="button" class="event-image-thumb ${imageUrls.length > 1 ? (index === 0 ? 'primary' : 'secondary') : ''} ${imageUrls.length > 1 ? 'clickable' : ''}" data-gallery-images='${escapeHtml(JSON.stringify(imageUrls))}' data-gallery-index="${index}">
-                                        <div class="event-image-media">
-                                            <div class="event-image-placeholder" data-preview-url="${escapeHtml(url)}">Loading photo…</div>
-                                        </div>
-                                        ${index === 2 && imageUrls.length > 3 ? `
-                                            <div class="image-overlay">+${imageUrls.length - 3} more</div>
-                                        ` : ''}
-                                        ${index === 1 && imageUrls.length === 2 ? `
-                                            <div class="image-overlay">View more</div>
-                                        ` : ''}
-                                    </button>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-                    </article>
-                `;
-            }).join('');
-        };
-
-        const loadEvents = () => {
-            const eventsRef = ref(db, 'events');
-            onValue(eventsRef, (snapshot) => {
-                const eventMap = snapshot.val() || {};
-                events = Object.entries(eventMap).map(([id, eventData]) => ({ id, ...eventData }))
-                    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-                renderEvents();
-                setupLazyImages();
-            });
-        };
-
-        addEventButton.addEventListener('click', () => {
-            if (!canManageEvent()) {
-                return;
-            }
-            openEventForm();
         });
 
-        closeEventFormButton.addEventListener('click', () => {
-            eventFormPanel.classList.add('hidden');
-            resetEventForm();
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.replace('login.html');
+                return;
+            }
+
+            try {
+                const snapshot = await get(dbRef(db, `users/${user.uid}`));
+                if (snapshot.exists()) {
+                    currentUserRole = snapshot.val().role || 'Student';
+                }
+
+                document.getElementById('role-badge').textContent = `Role: ${currentUserRole}`;
+
+                if (currentUserRole === 'Teacher') {
+                    document.getElementById('teacher-panel').style.display = 'block';
+                }
+
+                listenForEvents();
+            } catch (error) {
+                console.error("Role Verification Error:", error);
+            } finally {
+                const loader = document.getElementById('loader-wrapper');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
         });
 
-        eventForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            if (!currentUser) {
-                alert('Please sign in before posting an event.');
-                return;
-            }
-            if (!canManageEvent()) {
-                alert('Only the allowed account can publish event announcements.');
+        document.getElementById('form-upload-event').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (currentUserRole !== 'Teacher') {
+                showToast("Unauthorized: Only teachers can publish events.", "error");
                 return;
             }
 
+            const btn = document.getElementById('btn-publish');
             const title = document.getElementById('event-title').value.trim();
-            const date = document.getElementById('event-date').value;
-            const location = document.getElementById('event-location').value.trim();
-            const description = document.getElementById('event-description').value.trim();
-            const links = parseLinks(document.getElementById('event-links').value);
-            const imageFiles = document.getElementById('event-images').files;
+            const dateStr = document.getElementById('event-date').value;
+            const target = document.getElementById('event-target').value;
+            const desc = document.getElementById('event-desc').value.trim();
+            const file = imageInput.files[0];
 
-            const eventRef = editingEventId ? ref(db, `events/${editingEventId}`) : push(ref(db, 'events'));
+            btn.disabled = true;
+            btn.textContent = "Uploading Poster & Creating Event...";
 
-            let uploadedUrls = [];
-            if (imageFiles.length) {
-                uploadedUrls = await uploadEventImages(imageFiles);
-            }
+            try {
+                const fileRef = storageRef(storage, `events/${Date.now()}_${file.name}`);
+                await uploadBytes(fileRef, file);
+                const imageUrl = await getDownloadURL(fileRef);
 
-            const payload = {
-                title,
-                date,
-                location,
-                description,
-                links,
-                imageUrls: [...existingEventImages, ...uploadedUrls],
-                createdByUid: currentUser.uid,
-                createdAt: new Date().toISOString()
-            };
+                const eventsListRef = dbRef(db, 'events');
+                const newEventRef = push(eventsListRef);
 
-            if (editingEventId) {
-                await update(eventRef, payload);
-            } else {
-                await set(eventRef, payload);
-                window.showAppNotification?.('New event added', {
-                    body: `An event titled "${payload.title || 'Untitled event'}" is now available.`,
-                    icon: '/assets/secured/icons/logo.png',
-                    badge: '/assets/secured/icons/logo.png',
+                await set(newEventRef, {
+                    title: title,
+                    date: dateStr,
+                    targetDivision: target,
+                    description: desc,
+                    imageUrl: imageUrl,
+                    createdAt: new Date().toISOString()
                 });
-            }
 
-            eventForm.reset();
-            eventFormPanel.classList.add('hidden');
-            resetEventForm();
-        });
-
-        document.getElementById('gallery-close-btn').addEventListener('click', closeImageGallery);
-        document.querySelector('.image-gallery-backdrop').addEventListener('click', closeImageGallery);
-        document.getElementById('gallery-prev-btn').addEventListener('click', () => {
-            if (!galleryImages.length) return;
-            updateGalleryImage(galleryIndex - 1);
-        });
-        document.getElementById('gallery-next-btn').addEventListener('click', () => {
-            if (!galleryImages.length) return;
-            updateGalleryImage(galleryIndex + 1);
-        });
-        document.getElementById('gallery-thumbs').addEventListener('click', (event) => {
-            const thumbButton = event.target.closest('.gallery-thumb');
-            if (!thumbButton) return;
-            updateGalleryImage(Number(thumbButton.dataset.galleryThumbIndex));
-        });
-
-        document.addEventListener('keydown', (event) => {
-            const modal = document.getElementById('image-gallery-modal');
-            if (modal.classList.contains('hidden')) return;
-            if (event.key === 'Escape') {
-                closeImageGallery();
-            } else if (event.key === 'ArrowRight') {
-                updateGalleryImage(galleryIndex + 1);
-            } else if (event.key === 'ArrowLeft') {
-                updateGalleryImage(galleryIndex - 1);
+                showToast("Event successfully published!");
+                
+                document.getElementById('form-upload-event').reset();
+                previewImg.style.display = 'none';
+                uploadPrompt.style.display = 'inline';
+            } catch (error) {
+                console.error("Upload Error:", error);
+                showToast("Failed to upload event.", "error");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Publish Event";
             }
         });
 
-        eventsList.addEventListener('click', async (event) => {
-            const editButton = event.target.closest('.edit-lesson-btn');
-            if (editButton) {
-                const eventId = editButton.dataset.key;
-                const eventData = events.find((item) => item.id === eventId);
-                if (eventData) {
-                    openEventForm(eventData);
+        function listenForEvents() {
+            const eventsGrid = document.getElementById('events-grid');
+            const eventsDbRef = dbRef(db, 'events');
+
+            onValue(eventsDbRef, (snapshot) => {
+                eventsGrid.innerHTML = "";
+
+                if (!snapshot.exists()) {
+                    eventsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888;">No events posted yet.</p>`;
+                    return;
                 }
-                return;
-            }
 
-            const deleteButton = event.target.closest('.delete-lesson-btn');
-            if (deleteButton) {
-                const eventId = deleteButton.dataset.key;
-                const confirmed = window.confirm('Delete this event announcement?');
-                if (!confirmed) return;
-                await remove(ref(db, `events/${eventId}`));
-                return;
-            }
+                const data = snapshot.val();
+                
+                Object.entries(data).reverse().forEach(([key, item]) => {
+                    const formattedDate = new Date(item.date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+                    
+                    const card = document.createElement('div');
+                    card.className = 'event-card';
+                    
+                    card.innerHTML = `
+                        ${currentUserRole === 'Teacher' ? `<button class="btn-delete-event" data-id="${escapeHTML(key)}">Delete</button>` : ''}
+                        <img src="${escapeHTML(item.imageUrl)}" alt="${escapeHTML(item.title)}" class="event-banner">
+                        <div class="event-body">
+                            <span class="event-tag">${escapeHTML(item.targetDivision)}</span>
+                            <h3 class="event-title">${escapeHTML(item.title)}</h3>
+                            <div class="event-date">${escapeHTML(formattedDate)}</div>
+                            <p class="event-desc">${escapeHTML(item.description)}</p>
+                        </div>
+                    `;
 
-            const galleryTrigger = event.target.closest('.event-image-thumb');
-            if (galleryTrigger) {
-                const galleryImagesData = galleryTrigger.dataset.galleryImages;
-                const startIndex = Number(galleryTrigger.dataset.galleryIndex || 0);
-                try {
-                    openImageGallery(JSON.parse(galleryImagesData || '[]'), startIndex);
-                } catch (error) {
-                    console.error('Failed to open event gallery.', error);
+                    eventsGrid.appendChild(card);
+                });
+
+                if (currentUserRole === 'Teacher') {
+                    document.querySelectorAll('.btn-delete-event').forEach(button => {
+                        button.addEventListener('click', async (e) => {
+                            const id = e.target.getAttribute('data-id');
+                            if (confirm("Are you sure you want to delete this event?")) {
+                                try {
+                                    await remove(dbRef(db, `events/${id}`));
+                                    showToast("Event deleted.");
+                                } catch (err) {
+                                    showToast("Failed to delete event.", "error");
+                                }
+                            }
+                        });
+                    });
                 }
-            }
-        });
-
-        currentUser = auth.currentUser || null;
-        updateEventManagementUI();
-
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            updateEventManagementUI();
-            renderEvents();
-        });
-
-        loadEvents();
+            });
+        }
     </script>
-    <div id="verse-modal" class="modal-overlay hidden" aria-hidden="true">
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="verse-modal-title">
-            <h3 id="verse-modal-title">Verse</h3>
-            <div class="verse-embed">
-                <iframe id="verse-iframe" src="about:blank" title="Bible verse popup" loading="lazy" allowfullscreen></iframe>
-            </div>
-            <div class="modal-actions">
-                <button type="button" class="cancel-btn" id="verse-close-btn">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <script type="module" src="js/streak.js"></script>
-
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-block">
-                <p class="footer-title">Connect with us</p>
-                <ul class="footer-links">
-                    <li><a href="https://www.facebook.com/MCOC33AD" target="_blank" rel="noopener">Facebook</a></li>
-                    <li><a href="https://www.youtube.com/@metrovillechurchofchrist33ad" target="_blank" rel="noopener">YouTube</a></li>
-                </ul>
-            </div>
-            <div class="footer-block">
-                <p class="footer-title">Visit us</p>
-                <address>
-                    B2 L5 Blue Palm St., Metroville Subd.
-                    <br>Balibago, Sta. Rosa, Laguna
-                </address>
-                <a href="https://maps.app.goo.gl/aVL7m1dCXdntAj4j6" target="_blank" rel="noopener">Open map</a>
-            </div>
-        </div>
-    </footer>
 </body>
 </html>

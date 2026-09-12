@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Children's Department | Privacy Policy & Terms of Service</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-blue: #4A90E2;
+            --warm-orange: #F5A623;
+            --vibrant-green: #7ED321;
+            --soft-yellow: #F8E71C;
+            --danger-red: #D0021B;
+            --bg-color: #F9FAFC;
+            --card-bg: #FFFFFF;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --text-light: #FFFFFF;
+            --border-color: #E2E8F0;
+            --transition-speed: 0.3s;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* Loader */
+        #loader-wrapper {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-color);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease;
+        }
+        .loader {
+            width: 50px; height: 50px; border: 6px solid var(--soft-yellow);
+            border-top-color: var(--primary-blue); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Header & Navigation */
+        header { background-color: var(--text-light); box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+        nav { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--primary-blue); letter-spacing: 1px; }
+        .logo span { color: var(--warm-orange); }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { font-weight: 700; color: var(--text-dark); transition: color var(--transition-speed); }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-blue); }
+        .btn-account { background-color: var(--primary-blue); color: var(--text-light) !important; padding: 0.5rem 1.2rem; border-radius: 25px; }
+
+        .mobile-menu-btn {
+            display: none; background: none; border: none; font-size: 2rem; color: var(--primary-blue); cursor: pointer;
+        }
+
+        /* Hero Banner */
+        .legal-hero {
+            background: linear-gradient(135deg, rgba(74,144,226,0.1) 0%, rgba(126,211,33,0.1) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .legal-hero h1 { font-size: 2.2rem; font-weight: 900; color: var(--primary-blue); margin-bottom: 0.5rem; }
+        .legal-hero p { color: var(--text-muted); font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+        /* Main Legal Layout */
+        .legal-container {
+            max-width: 1100px; width: 100%; margin: 2rem auto; padding: 0 1.5rem;
+            display: grid; grid-template-columns: 280px 1fr; gap: 2rem;
+            flex: 1;
+        }
+
+        /* Sidebar Navigation */
+        .legal-sidebar {
+            background: var(--card-bg); border-radius: 15px; padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); height: fit-content;
+            position: sticky; top: 90px;
+        }
+        .legal-sidebar h3 { font-size: 1.1rem; color: var(--primary-blue); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border-color); }
+        .legal-nav-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+        .legal-nav-list a {
+            display: block; padding: 0.6rem 0.8rem; border-radius: 8px; font-weight: 700;
+            color: var(--text-muted); font-size: 0.95rem; transition: all 0.2s;
+        }
+        .legal-nav-list a:hover, .legal-nav-list a.active {
+            background-color: rgba(74, 144, 226, 0.1); color: var(--primary-blue);
+        }
+
+        /* Legal Content Area */
+        .legal-content { display: flex; flex-direction: column; gap: 2rem; }
+        .legal-card { background: var(--card-bg); border-radius: 15px; padding: 2.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .legal-card h2 { color: var(--primary-blue); font-size: 1.6rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border-color); }
+        .legal-card h3 { color: var(--warm-orange); font-size: 1.2rem; margin: 1.5rem 0 0.5rem; }
+        .legal-card p { font-size: 0.98rem; color: #444; margin-bottom: 1rem; line-height: 1.7; }
+        .legal-card ul { margin: 0.5rem 0 1rem 1.5rem; color: #444; font-size: 0.98rem; }
+        .legal-card li { margin-bottom: 0.4rem; }
+
+        .notice-box {
+            background-color: #EBF8FF; border-left: 4px solid var(--primary-blue);
+            padding: 1rem; border-radius: 0 8px 8px 0; font-size: 0.92rem; color: #2B6CB0; margin: 1rem 0;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--text-dark); color: var(--text-light); padding: 3rem 2rem 1.5rem; margin-top: 4rem;
+        }
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+        .footer-section h3 { color: var(--soft-yellow); margin-bottom: 0.8rem; font-size: 1.1rem; }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 0.4rem; }
+        .footer-section a { color: #AAAAAA; transition: color var(--transition-speed); font-size: 0.9rem; }
+        .footer-section a:hover { color: var(--text-light); }
+        .footer-section p { color: #AAAAAA; margin-bottom: 0.4rem; font-size: 0.9rem; }
+        .footer-bottom { text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #444; color: #777; font-size: 0.85rem; }
+
+        @media (max-width: 850px) {
+            .legal-container { grid-template-columns: 1fr; }
+            .legal-sidebar { display: none; }
+            .mobile-menu-btn { display: block; }
+            .nav-links {
+                position: absolute; top: 100%; left: 0; width: 100%;
+                background-color: var(--text-light); flex-direction: column;
+                align-items: center; padding: 2rem 0; gap: 1.5rem;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                clip-path: circle(0% at 50% -20%);
+                transition: clip-path 0.4s ease-in-out;
+            }
+            .nav-links.active { clip-path: circle(150% at 50% 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading UI -->
+    <div id="loader-wrapper">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header>
+        <nav>
+            <div class="logo">Children's <span>Ministry</span></div>
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle Menu">&#9776;</button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="division.html">Division</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="account.html" class="btn-account" id="nav-account">My Account</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Header -->
+    <section class="legal-hero">
+        <h1>Legal Policies & Agreements</h1>
+        <p>Please read our Privacy Policy and Terms of Service to understand how we protect your information and govern our digital services.</p>
+    </section>
+
+    <!-- Main Content Container -->
+    <div class="legal-container">
+        
+        <!-- Quick Nav Sidebar -->
+        <aside class="legal-sidebar">
+            <h3>Table of Contents</h3>
+            <ul class="legal-nav-list">
+                <li><a href="#privacy-policy" class="active">1. Privacy Policy</a></li>
+                <li><a href="#terms-of-service">2. Terms of Service</a></li>
+                <li><a href="#child-safety">3. Children's Data Safety</a></li>
+                <li><a href="#contact-us">4. Contact Information</a></li>
+            </ul>
+        </aside>
+
+        <!-- Document Content -->
+        <main class="legal-content">
+            
+            <!-- PRIVACY POLICY CARD -->
+            <section class="legal-card" id="privacy-policy">
+                <h2>Privacy Policy</h2>
+                <p><em>Last Updated: September 2026</em></p>
+
+                <p>At the <strong>Children's Ministry</strong>, protecting the privacy of our students, parents, and ministry volunteers is our highest priority. This Privacy Policy outlines the types of information we collect through our online services and how we handle, store, and protect it.</p>
+
+                <h3>1. Information We Collect</h3>
+                <p>We collect minimal personal data necessary to manage Sunday School divisions, organize events, and maintain safe engagement:</p>
+                <ul>
+                    <li><strong>Account & Demographic Info:</strong> Name, age, birthday, gender, division/class assignment, email address, and optional bio descriptions.</li>
+                    <li><strong>Profile Photos:</strong> Images uploaded voluntarily for profile identification within student directories.</li>
+                    <li><strong>Attendance Records:</strong> Sunday School attendance marks recorded by authorized teachers.</li>
+                    <li><strong>Technical Log Data:</strong> Basic usage data managed via Google Firebase services for authentication and database security.</li>
+                </ul>
+
+                <h3>2. How Information is Used</h3>
+                <p>Information gathered is strictly utilized for educational and ministry purposes, including:</p>
+                <ul>
+                    <li>Organizing students into appropriate age divisions (Beginner, Primary, Middler).</li>
+                    <li>Enabling teachers to maintain accurate weekly class attendance records.</li>
+                    <li>Facilitating directory visibility exclusively between enrolled peers, teachers, and ministry leaders.</li>
+                    <li>Notifying users regarding upcoming ministry events and schedule changes.</li>
+                </ul>
+
+                <div class="notice-box">
+                    <strong>Notice Regarding Directory Visibility:</strong> Member names, class divisions, and profile pictures are visible to verified classmates and teachers to support community building within the ministry. Private email addresses and account passwords are strictly non-public.
+                </div>
+
+                <h3>3. Data Storage & Security</h3>
+                <p>Your data is securely stored using Google Firebase Realtime Database and Authentication services. We enforce client-side sanitization and server-side rules to prevent unauthorized database access, code injections, or data leaks.</p>
+
+                <h3>4. Account Control & Deletion</h3>
+                <p>Users maintain complete ownership over their data. You can edit your personal details or permanently remove your account and stored database nodes at any time through your <strong>Account Settings</strong> page.</p>
+            </section>
+
+            <!-- TERMS OF SERVICE CARD -->
+            <section class="legal-card" id="terms-of-service">
+                <h2>Terms of Service</h2>
+                <p><em>Last Updated: September 2026</em></p>
+
+                <p>By accessing or using the Children's Ministry digital portal, you agree to comply with and be bound by the following Terms of Service. Please read them carefully.</p>
+
+                <h3>1. Code of Conduct</h3>
+                <p>Our platform is designed to provide a safe, respectful, and encouraging environment. All users agree to:</p>
+                <ul>
+                    <li>Provide accurate and truthful registration information.</li>
+                    <li>Refrain from uploading inappropriate content, photos, or text.</li>
+                    <li>Respect fellow classmates, teachers, and ministry leaders.</li>
+                    <li>Maintain the confidentiality of their account login credentials.</li>
+                </ul>
+
+                <h3>2. Role-Based Access Controls</h3>
+                <p>Access permissions are governed strictly by administrative roles:</p>
+                <ul>
+                    <li><strong>Students/Members:</strong> Granted access to personal profile settings, event schedules, and division directories.</li>
+                    <li><strong>Teachers:</strong> Authorized to publish ministry events, manage student class lists, and track attendance.</li>
+                </ul>
+
+                <h3>3. Service Availability & Modifications</h3>
+                <p>We strive to maintain high availability for our portal services but reserve the right to modify, suspend, or update platform functions or policies at any time to enhance system safety or ministry alignment.</p>
+            </section>
+
+            <!-- CHILD SAFETY CARD -->
+            <section class="legal-card" id="child-safety">
+                <h2>Children's Digital Safety & COPPA Compliance</h2>
+                <p>Recognizing that our platform serves children and young students, we strictly adhere to principles protecting minor safety on the internet:</p>
+                <ul>
+                    <li>We never sell, lease, or monetize user data to third-party advertisers or commercial entities.</li>
+                    <li>Parental oversight is encouraged for all account creations involving minor students.</li>
+                    <li>Any reported instance of inappropriate content or security concerns will result in immediate content removal and administrative account review.</li>
+                </ul>
+            </section>
+
+            <!-- CONTACT CARD -->
+            <section class="legal-card" id="contact-us">
+                <h2>Contact Information</h2>
+                <p>If you have any questions, concerns, or requests regarding this Privacy Policy, Terms of Service, or data handling, please visit or write to us at:</p>
+                <p>
+                    <strong>Children's Department Ministry</strong><br>
+                    B2 L5 Blue Palm St., Metroville Subd.<br>
+                    Balibago, Sta. Rosa, Laguna
+                </p>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>Connect with us</h3>
+                <ul>
+                    <li><a href="https://www.facebook.com/MCOC33AD" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+                    <li><a href="https://www.youtube.com/@metrovillechurchofchrist33ad" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Visit us</h3>
+                <p>B2 L5 Blue Palm St., Metroville Subd.</p>
+                <p>Balibago, Sta. Rosa, Laguna</p>
+                <a href="https://maps.app.goo.gl/prnvJAda997hbf9GA" class="map-link" target="_blank" rel="noopener noreferrer">Open map</a>
+            </div>
+
+            <div class="footer-section">
+                <!-- Directory: Intentionally left blank pending client content -->
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; <span id="current-year"></span> Children's Department. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Firebase SDK & Common Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBsMaPJEXjJt4pMtJYeuZB7m1J2RjARqrU",
+            authDomain: "children-department-ab045.firebaseapp.com",
+            databaseURL: "https://children-department-ab045-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "children-department-ab045",
+            messagingSenderId: "284100421486",
+            appId: "1:284100421486:web:fc56c486487099662b037f",
+            measurementId: "G-NNTTMWCQKK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Dynamic Nav Button Handling
+        const accountLink = document.getElementById('nav-account');
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                accountLink.textContent = 'My Account';
+                accountLink.href = 'account.html';
+            } else {
+                accountLink.textContent = 'Login';
+                accountLink.href = 'login.html';
+            }
+        });
+
+        // Mobile Menu Toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('nav-links').classList.toggle('active');
+        });
+
+        // Current Footer Year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Page Loader Hide
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader-wrapper');
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 500);
+        });
+    </script>
+</body>
+</html>

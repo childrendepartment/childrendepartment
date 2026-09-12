@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Children's Department | My Account</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS Variables - Consistent with Visual Cognitive Theme */
+        :root {
+            --primary-blue: #4A90E2;
+            --warm-orange: #F5A623;
+            --vibrant-green: #7ED321;
+            --soft-yellow: #F8E71C;
+            --danger-red: #D0021B;
+            --bg-color: #F9FAFC;
+            --card-bg: #FFFFFF;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --text-light: #FFFFFF;
+            --border-color: #E2E8F0;
+            --transition-speed: 0.3s;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* Loader */
+        #loader-wrapper {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-color);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease;
+        }
+        .loader {
+            width: 50px; height: 50px; border: 6px solid var(--soft-yellow);
+            border-top-color: var(--primary-blue); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Navigation */
+        header { background-color: var(--text-light); box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+        nav { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--primary-blue); letter-spacing: 1px; }
+        .logo span { color: var(--warm-orange); }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { font-weight: 700; color: var(--text-dark); transition: color var(--transition-speed); }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-blue); }
+        
+        .mobile-menu-btn {
+            display: none; background: none; border: none; font-size: 2rem; color: var(--primary-blue); cursor: pointer;
+        }
+
+        .btn-logout { 
+            background-color: var(--warm-orange); 
+            color: var(--text-light) !important; 
+            padding: 0.5rem 1.2rem; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            border: none; 
+            font-family: inherit; 
+            font-weight: 700; 
+            font-size: 1rem; 
+            transition: background-color var(--transition-speed);
+        }
+        .btn-logout:hover { background-color: #e09612; }
+
+        /* Top Search Directory Section */
+        .top-search-wrapper {
+            max-width: 800px;
+            margin: 2rem auto 0;
+            padding: 0 1.5rem;
+            width: 100%;
+            position: relative;
+            z-index: 100;
+        }
+        .top-search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all var(--transition-speed);
+        }
+        .top-search-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 6px 12px rgba(74, 144, 226, 0.15);
+        }
+        .search-results-dropdown {
+            margin-top: 1rem;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 1rem;
+            display: none; /* Hidden strictly when empty */
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .user-list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .user-card-horizontal {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+            background: var(--bg-color);
+        }
+        .user-card-horizontal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .user-card-horizontal img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-blue);
+            background-color: #fff;
+            flex-shrink: 0;
+        }
+        .user-card-info { display: flex; flex-direction: column; }
+        .user-card-name { font-weight: 700; color: var(--text-dark); font-size: 1.05rem; line-height: 1.2; }
+        .user-card-class { font-size: 0.85rem; color: var(--primary-blue); margin-top: 0.3rem; font-weight: 600; }
+
+        /* Account Layout Container */
+        .account-container {
+            max-width: 1100px; width: 100%; margin: 2rem auto; padding: 0 1.5rem;
+            display: grid; grid-template-columns: 320px 1fr; gap: 2rem;
+            flex: 1;
+        }
+
+        /* Sidebar Profile */
+        .profile-sidebar {
+            background: var(--card-bg); border-radius: 15px; padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;
+            height: fit-content;
+        }
+        .profile-pic-wrapper { position: relative; width: 140px; height: 140px; margin: 0 auto 1.5rem; }
+        .profile-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-blue); background-color: #fff; }
+        .upload-btn {
+            position: absolute; bottom: 0; right: 5px; background: var(--warm-orange);
+            color: white; border: none; border-radius: 50%; width: 38px; height: 38px;
+            cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.2s;
+        }
+        .upload-btn:hover { transform: scale(1.1); }
+        #file-input { display: none; }
+        .profile-sidebar h2 { color: var(--primary-blue); font-size: 1.4rem; margin-bottom: 0.2rem; word-break: break-word; }
+        .profile-sidebar p.email-text { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem; word-break: break-all; }
+        
+        .bio-text { font-style: italic; color: #555; font-size: 0.9rem; margin: 1rem 0; padding: 0.6rem; background: #f8fafc; border-radius: 8px; border: 1px dashed var(--border-color); }
+        .demographics { display: flex; justify-content: center; gap: 10px; font-size: 0.85rem; color: #666; margin-bottom: 1rem; font-weight: 600; }
+        .public-notice { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: var(--primary-blue); background: rgba(74, 144, 226, 0.1); padding: 0.5rem; border-radius: 6px; margin-top: 1rem; font-weight: 700; }
+        
+        .badge { display: inline-block; background: rgba(126,211,33,0.2); color: #5B9E15; padding: 0.3rem 0.8rem; border-radius: 15px; font-weight: 700; font-size: 0.8rem;}
+
+        /* Main Content Cards */
+        .account-content { display: flex; flex-direction: column; gap: 2rem; }
+        .card { background: var(--card-bg); border-radius: 15px; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .card h3 { color: var(--primary-blue); margin-bottom: 1.5rem; font-size: 1.3rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 600; color: var(--text-dark); font-size: 0.95rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.8rem 1rem; border: 2px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary-blue); }
+        .form-group input:disabled { background-color: #f0f2f5; color: #888; cursor: not-allowed; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+        .btn-save { background-color: var(--vibrant-green); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 25px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
+        .btn-save:hover { background-color: #6bb51c; }
+        .btn-save:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        .danger-zone { border: 2px dashed var(--danger-red); background-color: #FFF5F5; }
+        .danger-zone h3 { color: var(--danger-red); border-bottom-color: rgba(208, 2, 27, 0.2); }
+        .btn-danger { background-color: var(--danger-red); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 25px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
+        .btn-danger:hover { background-color: #a80014; }
+
+        /* Provider Notice Banner */
+        .provider-notice {
+            background-color: #EBF8FF;
+            border: 1px solid #BEE3F8;
+            color: #2B6CB0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        /* Toast Notifications */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background-color: var(--text-dark); color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-weight: 600; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
+        .toast.success { border-left: 5px solid var(--vibrant-green); }
+        .toast.error { border-left: 5px solid var(--danger-red); }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        /* Footer */
+        footer {
+            background-color: var(--text-dark); color: var(--text-light); padding: 3rem 2rem 1.5rem; margin-top: 4rem;
+        }
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+        .footer-section h3 { color: var(--soft-yellow); margin-bottom: 0.8rem; font-size: 1.1rem; }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 0.4rem; }
+        .footer-section a { color: #AAAAAA; transition: color var(--transition-speed); font-size: 0.9rem; }
+        .footer-section a:hover { color: var(--text-light); }
+        .footer-section p { color: #AAAAAA; margin-bottom: 0.4rem; font-size: 0.9rem; }
+        .footer-bottom { text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #444; color: #777; font-size: 0.85rem; }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 850px) {
+            .account-container { grid-template-columns: 1fr; }
+            .mobile-menu-btn { display: block; }
+            .nav-links {
+                position: absolute; top: 100%; left: 0; width: 100%;
+                background-color: var(--text-light); flex-direction: column;
+                align-items: center; padding: 2rem 0; gap: 1.5rem;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                clip-path: circle(0% at 50% -20%);
+                transition: clip-path 0.4s ease-in-out;
+            }
+            .nav-links.active { clip-path: circle(150% at 50% 0); }
+            .form-row { grid-template-columns: 1fr; gap: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading UI -->
+    <div id="loader-wrapper">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header>
+        <nav>
+            <div class="logo">Children's <span>Ministry</span></div>
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle Menu">&#9776;</button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="division.html">Division</a></li>
+                <li><a href="grow.html">Farm</a></li>
+                <li><button class="btn-logout" id="btn-logout">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Top Search Directory (Only visible search bar initially) -->
+    <div class="top-search-wrapper">
+        <input type="text" id="input-search-user" class="top-search-input" placeholder="Search friends by name or class..." autocomplete="off">
+        <div id="search-results-dropdown" class="search-results-dropdown">
+            <div id="search-placeholder" style="text-align: center; color: var(--text-muted); font-size: 0.95rem; padding: 1rem 0;">No matching friends found.</div>
+            <div class="user-list-grid" id="user-grid"></div>
+        </div>
+    </div>
+
+    <!-- Main Account Container -->
+    <main class="account-container">
+        
+        <!-- Sidebar: Profile Overview (Public Preview) -->
+        <aside class="profile-sidebar">
+            <div class="profile-pic-wrapper">
+                <img src="" alt="Profile Picture" class="profile-pic" id="display-profile-pic">
+                <button class="upload-btn" onclick="document.getElementById('file-input').click()" title="Upload Photo">+</button>
+                <input type="file" id="file-input" accept="image/png, image/jpeg, image/jpg, image/webp">
+            </div>
+            <h2 id="display-name">Loading...</h2>
+            <span class="badge" id="display-role">Member</span>
+            
+            <p class="bio-text" id="display-bio">No bio added yet.</p>
+            
+            <div class="demographics">
+                <span id="display-age">Age: --</span> | 
+                <span id="display-gender">Gender: --</span>
+            </div>
+
+            <p class="email-text" id="display-email">loading@email.com</p>
+
+            <div class="public-notice">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                Profile is visible to classmates & teachers
+            </div>
+        </aside>
+
+        <!-- Main Content Settings Cards -->
+        <div class="account-content">
+            
+            <!-- Information Update Card -->
+            <section class="card">
+                <h3>Personal Information</h3>
+                <form id="form-info">
+                    <div class="form-group">
+                        <label for="input-name">Full Name</label>
+                        <input type="text" id="input-name" placeholder="Enter your full name" required maxlength="60">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="input-gender">Gender</label>
+                            <select id="input-gender" required>
+                                <option value="" disabled selected>Select Gender...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Prefer not to say">Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="input-division">Assigned Class / Division</label>
+                            <input type="text" id="input-division" placeholder="E.g., Sunday School Primary" maxlength="50">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="input-birthday">Birthday</label>
+                            <input type="date" id="input-birthday" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="input-age">Age (Auto-calculated)</label>
+                            <input type="number" id="input-age" disabled placeholder="Select birthday first">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="input-bio">About Me (Bio)</label>
+                        <textarea id="input-bio" rows="3" maxlength="250" placeholder="Tell your teachers and friends a little about your hobbies and favorite things..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="input-email">Account Email (Private)</label>
+                        <input type="email" id="input-email" disabled>
+                    </div>
+
+                    <button type="submit" class="btn-save" id="btn-save-info">Save Profile Changes</button>
+                </form>
+            </section>
+
+            <!-- Security Update Card -->
+            <section class="card" id="card-security">
+                <h3>Security & Password</h3>
+                
+                <!-- Google SSO User Notice -->
+                <div id="google-security-notice" class="provider-notice" style="display: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <span>You logged in using Google. Password changes are managed directly through your Google Account settings.</span>
+                </div>
+
+                <!-- Password Auth Form -->
+                <form id="form-security" autocomplete="off">
+                    <div class="form-group">
+                        <label for="input-current-password">Current Password (Required for changes)</label>
+                        <input type="password" id="input-current-password" placeholder="Enter current password" required autocomplete="current-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="input-new-password">New Password</label>
+                        <input type="password" id="input-new-password" placeholder="Enter new password (min 6 chars)" minlength="6" autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn-save" id="btn-save-security">Update Password</button>
+                </form>
+            </section>
+
+            <!-- Danger Zone Card -->
+            <section class="card danger-zone">
+                <h3>Danger Zone</h3>
+                <p style="margin-bottom: 1.5rem; color: #666; font-size: 0.95rem;">Once you delete your account, your data will be permanently removed. Please be certain.</p>
+                
+                <form id="form-delete" autocomplete="off">
+                    <!-- Password Confirmation Wrapper (hidden for Google Auth users) -->
+                    <div class="form-group" id="delete-password-wrapper">
+                        <label for="input-delete-password">Confirm Password to Delete Account</label>
+                        <input type="password" id="input-delete-password" placeholder="Enter password to confirm" autocomplete="current-password">
+                    </div>
+                    
+                    <button type="submit" class="btn-danger" id="btn-delete-account">Delete My Account</button>
+                </form>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>Connect with us</h3>
+                <ul>
+                    <li><a href="https://www.facebook.com/MCOC33AD" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+                    <li><a href="https://www.youtube.com/@metrovillechurchofchrist33ad" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Visit us</h3>
+                <p>B2 L5 Blue Palm St., Metroville Subd.</p>
+                <p>Balibago, Sta. Rosa, Laguna</p>
+                <a href="https://maps.app.goo.gl/prnvJAda997hbf9GA" class="map-link" target="_blank" rel="noopener noreferrer">Open map</a>
+            </div>
+
+            <div class="footer-section">
+                <!-- Directory: Intentionally left blank pending client content -->
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <a href="terms.html" style="color: #AAAAAA; margin-right: 1rem;">Privacy Policy and Terms and Condition</a> |
+            &copy; <span id="current-year"></span> Children's Department. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Firebase SDK Integration & Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signOut, 
+            updateProfile, 
+            updatePassword, 
+            reauthenticateWithCredential, 
+            reauthenticateWithPopup, 
+            GoogleAuthProvider, 
+            EmailAuthProvider, 
+            deleteUser 
+        } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { getDatabase, ref as dbRef, get, set, update } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBsMaPJEXjJt4pMtJYeuZB7m1J2RjARqrU",
+            authDomain: "children-department-ab045.firebaseapp.com",
+            databaseURL: "https://children-department-ab045-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "children-department-ab045",
+            messagingSenderId: "284100421486",
+            appId: "1:284100421486:web:fc56c486487099662b037f",
+            measurementId: "G-NNTTMWCQKK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let isGoogleUser = false;
+        let indexedUsers = []; // Local cache for indexed public user directory search
+
+        // Security Helper: Sanitize Strings against HTML/Script DOM Injection (XSS Prevention)
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // UI Utility: Toast Notifications
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Auto-calculate Age based on Birthday input
+        document.getElementById('input-birthday').addEventListener('change', (e) => {
+            const birthDate = new Date(e.target.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            document.getElementById('input-age').value = age >= 0 ? age : 0;
+        });
+
+        // Responsive Navigation Mobile Menu Toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('nav-links').classList.toggle('active');
+        });
+
+        // Dynamic Footer Year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Fetch & Index Public User Profiles (Excluding Private Data like Emails/Passwords)
+        async function fetchUserDirectory() {
+            try {
+                const snapshot = await get(dbRef(db, 'users'));
+                indexedUsers = [];
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    for (const uid in data) {
+                        const u = data[uid];
+                        // SECURITY FILTER: Only cache and index public profile fields.
+                        indexedUsers.push({
+                            uid: uid,
+                            name: u.name || 'Anonymous Member',
+                            role: u.role || 'Student',
+                            division: u.division || 'Unassigned',
+                            profilePictureBase64: u.profilePictureBase64 || null
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Directory indexing error:", error);
+            }
+        }
+
+        // Search Directory Logic (Side-by-side preview design)
+        function renderSearchResults(query) {
+            const dropdown = document.getElementById('search-results-dropdown');
+            const grid = document.getElementById('user-grid');
+            const placeholder = document.getElementById('search-placeholder');
+            const cleanQuery = query.trim().toLowerCase();
+
+            // Hide the dropdown entirely if input is empty
+            if (!cleanQuery) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            dropdown.style.display = 'block';
+
+            const matches = indexedUsers.filter(user => {
+                const nameMatch = user.name.toLowerCase().includes(cleanQuery);
+                const divisionMatch = user.division.toLowerCase().includes(cleanQuery);
+                return nameMatch || divisionMatch;
+            });
+
+            if (matches.length === 0) {
+                grid.style.display = 'none';
+                placeholder.style.display = 'block';
+                placeholder.textContent = `No matching friends found for "${escapeHTML(query)}".`;
+                return;
+            }
+
+            placeholder.style.display = 'none';
+            grid.style.display = 'grid';
+            grid.innerHTML = '';
+
+            // Render Horizontal User Card Format
+            matches.slice(0, 12).forEach(user => {
+                const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=4A90E2&color=fff`;
+                const avatarSrc = user.profilePictureBase64 || fallbackAvatar;
+
+                const cardHtml = `
+                    <div class="user-card-horizontal">
+                        <img src="${avatarSrc}" alt="${escapeHTML(user.name)}" loading="lazy">
+                        <div class="user-card-info">
+                            <span class="user-card-name">${escapeHTML(user.name)}</span>
+                            <span class="user-card-class">Class: ${escapeHTML(user.division)}</span>
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
+
+        // Debounce Utility for smooth search execution
+        let searchTimeout = null;
+        document.getElementById('input-search-user').addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                renderSearchResults(e.target.value);
+            }, 250);
+        });
+
+        // Authentication State Observer
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.replace('login.html');
+                return;
+            }
+
+            currentUser = user;
+            
+            // PROVIDER DETECTION: Check if the user signed in using Google OAuth
+            isGoogleUser = user.providerData.some(p => p.providerId === 'google.com');
+
+            // Adapt Security & Danger Zone UI based on Provider
+            const securityForm = document.getElementById('form-security');
+            const googleNotice = document.getElementById('google-security-notice');
+            const deletePasswordWrapper = document.getElementById('delete-password-wrapper');
+            const deleteInput = document.getElementById('input-delete-password');
+            const btnDelete = document.getElementById('btn-delete-account');
+
+            if (isGoogleUser) {
+                securityForm.style.display = 'none';
+                googleNotice.style.display = 'flex';
+
+                deletePasswordWrapper.style.display = 'none';
+                deleteInput.removeAttribute('required');
+                btnDelete.textContent = 'Delete Account';
+            } else {
+                securityForm.style.display = 'block';
+                googleNotice.style.display = 'none';
+
+                deletePasswordWrapper.style.display = 'block';
+                deleteInput.setAttribute('required', 'true');
+                btnDelete.textContent = 'Delete My Account';
+            }
+            
+            // Base UI setup
+            const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'User')}&background=4A90E2&color=fff`;
+            
+            document.getElementById('display-name').textContent = user.displayName || 'No Name Set';
+            document.getElementById('display-email').textContent = user.email || 'No Email Set';
+            document.getElementById('input-name').value = user.displayName || '';
+            document.getElementById('input-email').value = user.email || '';
+            document.getElementById('display-profile-pic').src = user.photoURL || fallbackAvatar;
+
+            // Fetch extended user data from Realtime Database
+            try {
+                const userNodeRef = dbRef(db, `users/${user.uid}`);
+                const snapshot = await get(userNodeRef);
+                
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    
+                    document.getElementById('input-division').value = data.division || '';
+                    document.getElementById('input-gender').value = data.gender || '';
+                    document.getElementById('input-birthday').value = data.birthday || '';
+                    document.getElementById('input-age').value = data.age || '';
+                    document.getElementById('input-bio').value = data.bio || '';
+                    
+                    document.getElementById('display-role').textContent = data.role || 'Student';
+                    document.getElementById('display-gender').textContent = `Gender: ${data.gender || '--'}`;
+                    document.getElementById('display-age').textContent = `Age: ${data.age || '--'}`;
+                    
+                    if (data.bio) {
+                        document.getElementById('display-bio').textContent = `"${data.bio}"`;
+                    }
+                    
+                    if (data.profilePictureBase64) {
+                        document.getElementById('display-profile-pic').src = data.profilePictureBase64;
+                    }
+
+                    // DATABASE EMAIL HEALING: If email is missing or blank in database, patch it now
+                    if (!data.email || data.email === "-") {
+                        await update(userNodeRef, { email: user.email });
+                    }
+                } else {
+                    document.getElementById('display-role').textContent = 'Student';
+                    await update(userNodeRef, {
+                        name: user.displayName || "Anonymous User",
+                        email: user.email || "",
+                        role: "Student",
+                        createdAt: new Date().toISOString()
+                    });
+                }
+            } catch (error) {
+                console.error("DB Fetch Error:", error);
+            }
+
+            // Load Directory Index for Search
+            await fetchUserDirectory();
+
+            // Hide Loader
+            const loader = document.getElementById('loader-wrapper');
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 500);
+        });
+
+        // Profile Picture Upload Handler (Canvas Optimization)
+        document.getElementById('file-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                showToast('Invalid file type. Please upload JPG, PNG, or WebP.', 'error');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('File size is too large. Maximum size is 5MB.', 'error');
+                return;
+            }
+
+            showToast('Optimizing image...', 'success');
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = async () => {
+                    const TARGET_SIZE = 400;
+                    const canvas = document.createElement('canvas');
+                    canvas.width = TARGET_SIZE;
+                    canvas.height = TARGET_SIZE;
+                    const ctx = canvas.getContext('2d');
+
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+
+                    let srcX = 0, srcY = 0, srcWidth = img.width, srcHeight = img.height;
+                    if (img.width > img.height) {
+                        srcWidth = img.height;
+                        srcX = (img.width - img.height) / 2;
+                    } else if (img.height > img.width) {
+                        srcHeight = img.width;
+                        srcY = (img.height - img.width) / 2;
+                    }
+
+                    ctx.drawImage(img, srcX, srcY, srcWidth, srcHeight, 0, 0, TARGET_SIZE, TARGET_SIZE);
+
+                    let compressedBase64 = canvas.toDataURL('image/webp', 0.82);
+                    if (!compressedBase64.startsWith('data:image/webp')) {
+                        compressedBase64 = canvas.toDataURL('image/jpeg', 0.80);
+                    }
+
+                    if (compressedBase64.length > 80000) {
+                        compressedBase64 = canvas.toDataURL('image/webp', 0.65);
+                    }
+
+                    try {
+                        await update(dbRef(db, `users/${currentUser.uid}`), {
+                            profilePictureBase64: compressedBase64
+                        });
+
+                        document.getElementById('display-profile-pic').src = compressedBase64;
+                        showToast('Profile picture saved successfully!');
+                        fetchUserDirectory(); // Refresh index
+                    } catch (error) {
+                        showToast('Failed to save image to database.', 'error');
+                        console.error("Upload Error:", error);
+                    }
+                };
+            };
+        });
+
+        // Save Profile Information
+        document.getElementById('form-info').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-info');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            const newName = document.getElementById('input-name').value.trim();
+            const newDivision = document.getElementById('input-division').value.trim();
+            const newGender = document.getElementById('input-gender').value;
+            const newBirthday = document.getElementById('input-birthday').value;
+            const newAge = document.getElementById('input-age').value;
+            const newBio = document.getElementById('input-bio').value.trim();
+
+            try {
+                await updateProfile(currentUser, { displayName: newName });
+                
+                await update(dbRef(db, `users/${currentUser.uid}`), {
+                    name: newName,
+                    email: currentUser.email || "", // Keep database email synced on save
+                    division: newDivision,
+                    gender: newGender,
+                    birthday: newBirthday,
+                    age: newAge,
+                    bio: newBio
+                });
+
+                document.getElementById('display-name').textContent = newName;
+                document.getElementById('display-gender').textContent = `Gender: ${newGender || '--'}`;
+                document.getElementById('display-age').textContent = `Age: ${newAge || '--'}`;
+                document.getElementById('display-bio').textContent = newBio ? `"${newBio}"` : 'No bio added yet.';
+                
+                showToast('Account information updated!');
+                await fetchUserDirectory(); // Refresh index for community search
+            } catch (error) {
+                showToast('Failed to update information.', 'error');
+                console.error(error);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save Profile Changes';
+            }
+        });
+
+        // Password Authentication Re-auth Helper
+        async function reauthWithPassword(password) {
+            const userEmail = currentUser.email;
+            if (!userEmail) {
+                throw new Error("Missing profile email address required for re-authentication.");
+            }
+            const credential = EmailAuthProvider.credential(userEmail, password);
+            await reauthenticateWithCredential(currentUser, credential);
+        }
+
+        // Change Password Handler (Email/Password users only)
+        document.getElementById('form-security').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-security');
+            const currentPass = document.getElementById('input-current-password').value;
+            const newPass = document.getElementById('input-new-password').value;
+
+            if (newPass.length < 6) {
+                showToast('New password must be at least 6 characters.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Verifying...';
+
+            try {
+                await reauthWithPassword(currentPass);
+                await updatePassword(currentUser, newPass);
+                showToast('Password updated successfully!');
+                document.getElementById('form-security').reset();
+            } catch (error) {
+                if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    showToast('Incorrect current password.', 'error');
+                } else {
+                    showToast('Failed to update password.', 'error');
+                }
+                console.error(error);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Update Password';
+            }
+        });
+
+        // Account Deletion Handler (Handles both Google SSO & Password Users)
+        document.getElementById('form-delete').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-delete-account');
+
+            if (!confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.')) {
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Authenticating & Deleting...';
+
+            try {
+                // Step 1: Re-authenticate based on authentication provider type
+                if (isGoogleUser) {
+                    const googleProvider = new GoogleAuthProvider();
+                    await reauthenticateWithPopup(currentUser, googleProvider);
+                } else {
+                    const password = document.getElementById('input-delete-password').value;
+                    if (!password) {
+                        showToast('Please enter your password to confirm deletion.', 'error');
+                        btn.disabled = false;
+                        btn.textContent = 'Delete My Account';
+                        return;
+                    }
+                    await reauthWithPassword(password);
+                }
+
+                // Step 2: Delete Realtime Database Records
+                await set(dbRef(db, `users/${currentUser.uid}`), null);
+
+                // Step 3: Delete Firebase Auth User Record
+                await deleteUser(currentUser);
+
+                showToast('Account deleted successfully.');
+                setTimeout(() => {
+                    window.location.replace('index.html');
+                }, 1000);
+
+            } catch (error) {
+                console.error("Account Deletion Error:", error);
+
+                if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    showToast('Incorrect password verification.', 'error');
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    showToast('Google authentication popup was closed before completing.', 'error');
+                } else if (error.code === 'auth/requires-recent-login') {
+                    showToast('Session expired. Please log out and log back in before deleting.', 'error');
+                } else {
+                    showToast('Failed to delete account. Please try again.', 'error');
+                }
+
+                btn.disabled = false;
+                btn.textContent = isGoogleUser ? 'Delete Account' : 'Delete My Account';
+            }
+        });
+
+        // Logout Listener
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.replace('index.html');
+            }).catch((error) => {
+                showToast('Failed to log out.', 'error');
+            });
+        });
+
+    </script>
+</body>
+</html>
