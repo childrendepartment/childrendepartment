@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Fixed viewport settings to prevent manual pinch-zooming -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Children's Ministry | Grow My Garden</title>
     
@@ -23,99 +22,44 @@
             --gold: #FFD700;
             
             --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-            /* Glassmorphism settings */
             --card-bg: rgba(255, 255, 255, 0.25);
             --glass-border: rgba(255, 255, 255, 0.4);
         }
 
-        body.theme-dawn {
-            --bg-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a1c4fd 100%);
-        }
-        body.theme-morning {
-            --bg-gradient: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
-        }
-        body.theme-afternoon {
-            --bg-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        body.theme-sunset {
-            --bg-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        }
+        body.theme-dawn { --bg-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a1c4fd 100%); }
+        body.theme-morning { --bg-gradient: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); }
+        body.theme-afternoon { --bg-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        body.theme-sunset { --bg-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
         body.theme-night {
             --bg-gradient: linear-gradient(135deg, #09203f 0%, #537895 100%);
             --text-dark: #E2E8F0;
-            /* Dark mode glassmorphism */
             --card-bg: rgba(26, 32, 44, 0.4);
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        * { 
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-        }
+        * { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        body { 
-            font-family: 'Nunito', sans-serif; 
-            background: var(--bg-gradient); 
-            background-attachment: fixed;
-            color: var(--text-dark); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow-x: hidden; 
-            /* Added overscroll-behavior to prevent container bounce/refresh on mobile */
-            overscroll-behavior: none;
-            transition: background 1.5s ease;
-            touch-action: manipulation;
-        }
+        body { font-family: 'Nunito', sans-serif; background: var(--bg-gradient); background-attachment: fixed; color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; overscroll-behavior: none; transition: background 1.5s ease; touch-action: manipulation; }
         a { text-decoration: none; color: inherit; }
 
         /* --- CREATIVE SCENERY BACKGROUND --- */
         #scenery-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; overflow: hidden; }
-        
-        .stars-bg {
-            position: absolute; width: 100%; height: 100%;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 90px 140px, #e2e8f0, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 150px 50px, #ffffff, rgba(0,0,0,0));
-            background-repeat: repeat; background-size: 200px 200px;
-            opacity: 0; transition: opacity 2s ease;
-        }
+        .stars-bg { position: absolute; width: 100%; height: 100%; background-image: radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 90px 140px, #e2e8f0, rgba(0,0,0,0)), radial-gradient(2px 2px at 150px 50px, #ffffff, rgba(0,0,0,0)); background-repeat: repeat; background-size: 200px 200px; opacity: 0; transition: opacity 2s ease; }
         body.theme-night .stars-bg { opacity: 0.8; }
-
-        .celestial-body {
-            position: absolute; width: 80px; height: 80px; border-radius: 50%;
-            transition: all 3s ease-in-out;
-        }
+        .celestial-body { position: absolute; width: 80px; height: 80px; border-radius: 50%; transition: all 3s ease-in-out; }
         body.theme-dawn .celestial-body { top: 60%; left: 15%; background: #ffcfba; box-shadow: 0 0 50px #ffcfba; }
         body.theme-morning .celestial-body { top: 15%; left: 30%; background: #FFD700; box-shadow: 0 0 70px #FFD700; }
         body.theme-afternoon .celestial-body { top: 10%; left: 60%; background: #FFFACD; box-shadow: 0 0 90px #FFFACD; }
         body.theme-sunset .celestial-body { top: 45%; left: 75%; background: #FF8C00; box-shadow: 0 0 70px #FF8C00; }
         body.theme-night .celestial-body { top: 15%; left: 80%; background: #F4F6F0; box-shadow: 0 0 50px #F4F6F0; }
-
-        .wind-clouds {
-            position: absolute; top: 15%; width: 200vw; height: 150px; opacity: 0.4;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="150"><path d="M 50,80 C 35,80 35,65 55,65 C 55,45 95,45 100,65 C 115,65 115,80 95,80 Z" fill="%23FFFFFF"/><path d="M 250,110 C 235,110 235,95 255,95 C 255,75 295,75 300,95 C 315,95 315,110 295,110 Z" fill="%23FFFFFF"/></svg>');
-            animation: blowWind 80s linear infinite;
-        }
+        .wind-clouds { position: absolute; top: 15%; width: 200vw; height: 150px; opacity: 0.4; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="150"><path d="M 50,80 C 35,80 35,65 55,65 C 55,45 95,45 100,65 C 115,65 115,80 95,80 Z" fill="%23FFFFFF"/><path d="M 250,110 C 235,110 235,95 255,95 C 255,75 295,75 300,95 C 315,95 315,110 295,110 Z" fill="%23FFFFFF"/></svg>'); animation: blowWind 80s linear infinite; }
         body.theme-night .wind-clouds { opacity: 0.1; }
         @keyframes blowWind { 0% { transform: translateX(0); } 100% { transform: translateX(-50vw); } }
 
-        /* Visible Wind Gushing Effect */
         #wind-gush-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         .wind-line { position: absolute; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent); border-radius: 50%; opacity: 0; animation: windGush linear infinite; }
         @keyframes windGush { 0% { transform: translateX(100vw); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateX(-50vw); opacity: 0; } }
 
-        /* Dynamic Fireflies */
         #fireflies-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         .firefly { position: absolute; width: 5px; height: 5px; background: #e2ff66; border-radius: 50%; box-shadow: 0 0 8px 3px #e2ff66; opacity: 0; pointer-events: none; transition: opacity 1s ease; }
         body.theme-night .firefly, body.theme-sunset .firefly { animation: firefly-float ease-in-out infinite, firefly-blink infinite; }
@@ -123,14 +67,10 @@
         @keyframes firefly-blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
 
         .farm-horizon { position: absolute; bottom: 0; width: 100vw; height: 25vh; min-height: 150px; z-index: 2; }
-        
-        /* Animated SVG elements */
         #windmill-fan { animation: spinMill 8s linear infinite; transform-origin: 210px 150px; }
         @keyframes spinMill { 100% { transform: rotate(360deg); } }
-
         .sway-grass path { transform-origin: bottom; animation: sway 3s ease-in-out infinite alternate; }
         @keyframes sway { 0% { transform: skewX(-12deg); } 100% { transform: skewX(12deg); } }
-
         #house-window { transition: fill 1s, filter 1s; fill: #4A4A4A; }
         body.theme-night #house-window, body.theme-sunset #house-window { fill: #FFD700; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8)); }
 
@@ -138,16 +78,8 @@
         .loader { width: 50px; height: 50px; border: 6px solid var(--vibrant-green); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* RESPONSIVE NAVBAR & LIQUID GLASS UI */
-        header { 
-            background-color: var(--card-bg); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--glass-border);
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-        }
+        /* RESPONSIVE NAVBAR */
+        header { background-color: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 1000; }
         nav { max-width: 1200px; margin: 0 auto; padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.4rem; font-weight: 900; color: var(--primary-blue); z-index: 1002; text-shadow: 0 1px 2px rgba(255,255,255,0.5); }
         .logo span { color: var(--warm-orange); }
@@ -162,11 +94,10 @@
         .nav-links a { font-weight: 700; transition: color 0.3s; cursor: pointer; padding: 0.4rem 0.6rem; }
         .nav-links a:hover { color: var(--primary-blue); }
         .btn-account { background-color: var(--primary-blue); color: var(--text-light) !important; padding: 0.6rem 1.4rem !important; border-radius: 25px; display: inline-block; box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3); }
-
         .nav-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 999; }
         .nav-overlay.active { opacity: 1; pointer-events: auto; }
 
-        /* LIQUID GLASS CONTAINER & LAYOUT */
+        /* UI CONTAINERS */
         .container { max-width: 800px; margin: 1.5rem auto; padding: 0 1rem; flex: 1; width: 100%; text-align: center; position: relative; z-index: 100; }
         .page-header h1 { font-size: 2rem; font-weight: 900; color: var(--primary-blue); text-shadow: 0 2px 4px rgba(255,255,255,0.4); margin-bottom: 0.2rem; }
         .page-header p { font-weight: 700; opacity: 0.9; margin-bottom: 0.8rem; font-size: 0.95rem; }
@@ -224,7 +155,6 @@
         .btn-action:active:not(:disabled) { transform: scale(0.98); }
         .btn-action:disabled { background-color: #A0AEC0; cursor: not-allowed; box-shadow: none; opacity: 0.7; }
 
-        /* Z-INDEX FIX: Increased to 900 so it floats over container text while staying under the nav */
         .cloud-track { position: fixed; top: 75px; left: 0; width: 100vw; height: 120px; pointer-events: none; overflow: hidden; z-index: 900; display: none; }
         .daily-reward-cloud { position: absolute; top: 10px; left: -120px; cursor: pointer; pointer-events: auto; animation: moveCloud 25s linear infinite; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15)); transition: transform 0.2s, filter 0.4s; touch-action: manipulation; }
         .daily-reward-cloud:active { transform: scale(1.05); }
@@ -251,7 +181,6 @@
         .verse-title { color: var(--primary-blue); font-size: 1.2rem; font-weight: 900; margin-bottom: 0.4rem; }
         .verse-body { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.8rem; line-height: 1.4; font-style: italic; }
         .verse-ref { font-size: 0.85rem; font-weight: 800; color: var(--purple); margin-bottom: 1.2rem; }
-
         .btn-modal-close { background: var(--primary-blue); color: white; border: none; padding: 0.7rem 1.8rem; font-weight: 800; font-size: 0.95rem; border-radius: 25px; cursor: pointer; touch-action: manipulation; }
 
         #rain-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 10001; overflow: hidden; }
@@ -264,50 +193,21 @@
         .toast.error { border-left: 5px solid var(--danger-red); }
         .toast.show { opacity: 1; transform: translateY(0); }
 
-        /* RESPONSIVE MEDIA QUERIES */
         @media (max-width: 768px) {
-            /* INPUT FIX: Forced 16px font-size prevents iOS Safari auto-zoom on input focus */
-            input[type="text"], 
-            .optional-name-input, 
-            .subtle-name-text, 
-            .collection-name-input {
-                font-size: 16px !important;
-            }
-
+            input[type="text"], .optional-name-input, .subtle-name-text, .collection-name-input { font-size: 16px !important; }
             nav { padding: 0.8rem 1rem; }
             .nav-toggle { display: flex; }
-            
-            .nav-links {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 260px;
-                height: 100vh;
-                background: var(--card-bg);
-                backdrop-filter: blur(16px);
-                -webkit-backdrop-filter: blur(16px);
-                flex-direction: column;
-                justify-content: center;
-                gap: 1.5rem;
-                padding: 2rem 1.5rem;
-                box-shadow: -5px 0 20px rgba(0,0,0,0.15);
-                transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                z-index: 1001;
-            }
+            .nav-links { position: fixed; top: 0; right: -100%; width: 260px; height: 100vh; background: var(--card-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); flex-direction: column; justify-content: center; gap: 1.5rem; padding: 2rem 1.5rem; box-shadow: -5px 0 20px rgba(0,0,0,0.15); transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1001; }
             .nav-links.active { right: 0; }
             .nav-links a { font-size: 1.1rem; width: 100%; text-align: center; padding: 0.6rem 0; }
             .btn-account { width: 100%; text-align: center; }
-
             .visualizer-wrapper { width: 190px; height: 190px; }
             .plant-stage-title { font-size: 1.5rem; }
             .action-buttons { flex-direction: column; align-items: center; }
             .btn-action { width: 100%; max-width: 280px; min-width: auto; }
             .collection-grid { grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); }
         }
-
-        @media (max-width: 400px) {
-            .plant-option { width: 100%; max-width: 100%; }
-        }
+        @media (max-width: 400px) { .plant-option { width: 100%; max-width: 100%; } }
     </style>
 </head>
 <body>
@@ -317,47 +217,26 @@
         <div class="celestial-body"></div>
         <div class="wind-clouds"></div>
         <div id="wind-gush-layer"></div>
-        
         <div class="farm-horizon">
             <svg viewBox="0 0 1440 320" preserveAspectRatio="none" width="100%" height="100%">
                 <path fill="#2E5004" fill-opacity="0.15" d="M0,150 L1440,150 L1440,320 L0,320 Z"/>
                 <path fill="#5B9E15" opacity="0.6" d="M0,200 C300,300 600,100 900,200 C1200,300 1440,250 1440,250 L1440,320 L0,320 Z"/>
                 <path fill="#417505" opacity="0.8" d="M0,250 C400,150 800,350 1440,200 L1440,320 L0,320 Z"/>
-                
-                <!-- Dynamic Swaying Grass -->
                 <g class="sway-grass" fill="none" stroke="#7ED321" stroke-width="3" stroke-linecap="round">
-                    <path d="M 280,230 Q 285,215 290,205" />
-                    <path d="M 280,230 Q 275,210 270,200" />
-                    <path d="M 280,230 L 280,205" />
-                    
-                    <path d="M 550,260 Q 560,240 570,230" />
-                    <path d="M 550,260 Q 540,245 530,235" />
-                    <path d="M 550,260 L 550,235" />
-
-                    <path d="M 850,200 Q 860,180 870,170" />
-                    <path d="M 850,200 Q 840,185 830,175" />
-                    <path d="M 850,200 L 850,175" />
+                    <path d="M 280,230 Q 285,215 290,205" /><path d="M 280,230 Q 275,210 270,200" /><path d="M 280,230 L 280,205" />
+                    <path d="M 550,260 Q 560,240 570,230" /><path d="M 550,260 Q 540,245 530,235" /><path d="M 550,260 L 550,235" />
+                    <path d="M 850,200 Q 860,180 870,170" /><path d="M 850,200 Q 840,185 830,175" /><path d="M 850,200 L 850,175" />
                 </g>
-
-                <!-- Structure Background -->
                 <path fill="#A0522D" d="M1100,190 L1130,160 L1160,190 L1160,240 L1100,240 Z" />
                 <rect fill="#F5F5DC" x="1120" y="210" width="20" height="30" />
-                <!-- House Light Window -->
                 <rect id="house-window" x="1125" y="218" width="10" height="12" />
-                
                 <rect fill="#8B4513" x="1165" y="170" width="25" height="70" rx="5" />
-                
-                <!-- Windmill Base -->
                 <line x1="200" y1="230" x2="210" y2="150" stroke="#2D3748" stroke-width="3"/>
                 <line x1="220" y1="230" x2="210" y2="150" stroke="#2D3748" stroke-width="3"/>
-                
-                <!-- Animated Mill Fan Group -->
                 <g id="windmill-fan">
                     <circle cx="210" cy="150" r="5" fill="#2D3748"/>
-                    <path fill="#718096" d="M210,150 L200,110 L220,120 Z" />
-                    <path fill="#718096" d="M210,150 L250,140 L240,160 Z" />
-                    <path fill="#718096" d="M210,150 L220,190 L200,180 Z" />
-                    <path fill="#718096" d="M210,150 L170,160 L180,140 Z" />
+                    <path fill="#718096" d="M210,150 L200,110 L220,120 Z" /><path fill="#718096" d="M210,150 L250,140 L240,160 Z" />
+                    <path fill="#718096" d="M210,150 L220,190 L200,180 Z" /><path fill="#718096" d="M210,150 L170,160 L180,140 Z" />
                 </g>
             </svg>
         </div>
@@ -385,9 +264,7 @@
         <nav>
             <div class="logo">Children's <span>Ministry</span></div>
             <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </button>
             <ul class="nav-links" id="nav-links">
                 <li><a href="index.html">Home</a></li>
@@ -406,8 +283,8 @@
         </div>
 
         <div id="minimal-points-ui">
-            <div class="minimal-badge">Plant Progress: <span id="points-display">0</span> pts</div>
-            <div class="minimal-badge">Progress Points: <span id="global-points-display">0</span> pts</div>
+            <div class="minimal-badge">Growth: <span id="points-display">0%</span></div>
+            <div class="minimal-badge">Total Global Points: <span id="global-points-display">0</span> / 1,000,000</div>
         </div>
 
         <!-- Selection Screen -->
@@ -460,11 +337,11 @@
             <div class="action-buttons" id="standard-actions">
                 <button class="btn-action btn-water" id="btn-water" disabled>
                     <svg viewBox="0 0 24 24"><path d="M12,20A6,6 0 0,1 6,14C6,10 12,3.25 12,3.25C12,3.25 18,10 18,14A6,6 0 0,1 12,20Z" /></svg>
-                    <div class="btn-text"><span class="btn-title">Water (10m)</span><small class="btn-subtitle" id="water-sub">Loading...</small></div>
+                    <div class="btn-text"><span class="btn-title">Water</span><small class="btn-subtitle" id="water-sub">-10 Mins</small></div>
                 </button>
                 <button class="btn-action btn-fertilize" id="btn-fertilize" disabled>
                     <svg viewBox="0 0 24 24"><path d="M11,2V22H13V2H11M7,6V18H9V6H7M15,10V14H17V10H15Z" /></svg>
-                    <div class="btn-text"><span class="btn-title">Fertilize (30m)</span><small class="btn-subtitle" id="fert-sub">Loading...</small></div>
+                    <div class="btn-text"><span class="btn-title">Fertilize</span><small class="btn-subtitle" id="fert-sub">-30 Mins</small></div>
                 </button>
             </div>
             
@@ -519,7 +396,7 @@
                 </svg>
             </div>
 
-            <button class="btn-modal-close" id="btn-claim-rain" onclick="claimDailyRain()">Shower Plant (+150 pts)</button>
+            <button class="btn-modal-close" id="btn-claim-rain" onclick="claimDailyRain()">Shower Plant (-6 hours)</button>
             <button class="btn-modal-close" style="background: #A0AEC0; margin-top: 8px;" onclick="closeRainModal()">Close</button>
         </div>
     </div>
@@ -549,7 +426,8 @@
         let timerInterval;
 
         const COOLDOWNS = { water: 600000, fertilize: 1800000 }; 
-        const POINTS = { water: 10, fertilize: 30, daily: 150 };
+        const TIME_DEDUCTIONS = { water: 600000, fertilize: 1800000, daily: 21600000 }; // Time substracted in ms
+        const GLOBAL_REWARDS = { water: 10, fertilize: 30, daily: 150 }; // Global Points mapped from original pts[cite: 1]
 
         const BIBLE_VERSES = [
             { text: "I can do all things through Christ who strengthens me.", ref: "Philippians 4:13" },
@@ -560,13 +438,14 @@
             { text: "The fruit of the Spirit is love, joy, peace, patience, kindness.", ref: "Galatians 5:22" }
         ];
 
+        // Converted from point thresholds[cite: 1] to Time Thresholds (milliseconds) for a 24-hour total growth cycle
         const STAGES = [
-            { min: 0, max: 29, name: "Seed Stage" },
-            { min: 30, max: 79, name: "Germination" },
-            { min: 80, max: 149, name: "Sprout Stage" },
-            { min: 150, max: 249, name: "Vegetative" },
-            { min: 250, max: 349, name: "Budding Stage" },
-            { min: 350, max: Infinity, name: "Mature Plant" }
+            { min: 0, max: 7199999, name: "Seed Stage" }, // 0 - 2 hours
+            { min: 7200000, max: 21599999, name: "Germination" }, // 2 - 6 hours
+            { min: 21600000, max: 43199999, name: "Sprout Stage" }, // 6 - 12 hours
+            { min: 43200000, max: 64799999, name: "Vegetative" }, // 12 - 18 hours
+            { min: 64800000, max: 86399999, name: "Budding Stage" }, // 18 - 24 hours
+            { min: 86400000, max: Infinity, name: "Mature Plant" } // 24+ hours
         ];
 
         // Background FX Initializers
@@ -598,73 +477,38 @@
             }
         }
 
-        // Run Initializers
         initWindGush();
         initFireflies();
 
-        // Mobile Nav Logic
         const navToggle = document.getElementById('nav-toggle');
         const navLinks = document.getElementById('nav-links');
         const navOverlay = document.getElementById('nav-overlay');
 
-        function toggleMobileMenu() {
-            navToggle.classList.toggle('active');
-            navLinks.classList.toggle('active');
-            navOverlay.classList.toggle('active');
-        }
+        function toggleMobileMenu() { navToggle.classList.toggle('active'); navLinks.classList.toggle('active'); navOverlay.classList.toggle('active'); }
+        function closeMobileMenu() { navToggle.classList.remove('active'); navLinks.classList.remove('active'); navOverlay.classList.remove('active'); }
+        navToggle.addEventListener('click', toggleMobileMenu); navOverlay.addEventListener('click', closeMobileMenu);
 
-        function closeMobileMenu() {
-            navToggle.classList.remove('active');
-            navLinks.classList.remove('active');
-            navOverlay.classList.remove('active');
-        }
-
-        navToggle.addEventListener('click', toggleMobileMenu);
-        navOverlay.addEventListener('click', closeMobileMenu);
-
-        // Dynamic Background & Time System
         function updateBackgroundAndTime() {
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const body = document.body;
-            const timeBadge = document.getElementById('time-badge');
-
+            const now = new Date(); const hours = now.getHours(); const minutes = now.getMinutes().toString().padStart(2, '0');
+            const body = document.body; const timeBadge = document.getElementById('time-badge');
             body.classList.remove('theme-dawn', 'theme-morning', 'theme-afternoon', 'theme-sunset', 'theme-night');
-
             let periodLabel = '';
-            if (hours >= 5 && hours < 7) {
-                body.classList.add('theme-dawn');
-                periodLabel = '🌅 Dawn';
-            } else if (hours >= 7 && hours < 16) {
-                body.classList.add('theme-morning');
-                periodLabel = '☀️ Daytime';
-            } else if (hours >= 16 && hours < 19) {
-                body.classList.add('theme-sunset');
-                periodLabel = '🌆 Sunset';
-            } else {
-                body.classList.add('theme-night');
-                periodLabel = '🌙 Night Time';
-            }
-
-            if (timeBadge) {
-                timeBadge.textContent = `${periodLabel} (${hours}:${minutes})`;
-            }
+            if (hours >= 5 && hours < 7) { body.classList.add('theme-dawn'); periodLabel = '🌅 Dawn'; } 
+            else if (hours >= 7 && hours < 16) { body.classList.add('theme-morning'); periodLabel = '☀️ Daytime'; } 
+            else if (hours >= 16 && hours < 19) { body.classList.add('theme-sunset'); periodLabel = '🌆 Sunset'; } 
+            else { body.classList.add('theme-night'); periodLabel = '🌙 Night Time'; }
+            if (timeBadge) { timeBadge.textContent = `${periodLabel} (${hours}:${minutes})`; }
         }
-        setInterval(updateBackgroundAndTime, 30000);
-        updateBackgroundAndTime();
+        setInterval(updateBackgroundAndTime, 30000); updateBackgroundAndTime();
 
         function getLatest6HourTimestamp() {
-            const now = new Date();
-            const hours = now.getHours();
-            const slot = Math.floor(hours / 6) * 6; 
+            const now = new Date(); const hours = now.getHours(); const slot = Math.floor(hours / 6) * 6; 
             const latestSlot = new Date(now.getFullYear(), now.getMonth(), now.getDate(), slot, 0, 0, 0);
             return latestSlot.getTime();
         }
 
         function isDailyRainAvailable() {
-            const lastReward = userData.lastDailyReward || 0;
-            const resetTime = getLatest6HourTimestamp();
+            const lastReward = userData.lastDailyReward || 0; const resetTime = getLatest6HourTimestamp();
             return lastReward < resetTime;
         }
 
@@ -685,123 +529,64 @@
             const hue = (index * 18) % 360; 
             
             if (category === 'flower') {
-                return `<svg viewBox="0 0 100 100">
-                    <defs>
-                        <radialGradient id="gradF${index}" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" stop-color="hsl(${hue}, 100%, 80%)" />
-                            <stop offset="100%" stop-color="hsl(${hue}, 100%, 40%)" />
-                        </radialGradient>
-                    </defs>
-                    ${pot}
-                    <path d="M50 80 Q45 40 50 30" stroke="#2E5004" stroke-width="6" fill="none"/>
-                    <g transform="translate(50,30)">
-                        ${[0,45,90,135,180,225,270,315].map(rot => `<ellipse cx="0" cy="-15" rx="10" ry="20" fill="url(#gradF${index})" transform="rotate(${rot})" opacity="0.9"/>`).join('')}
-                        <circle cx="0" cy="0" r="8" fill="#3E2723"/>
-                        <circle cx="0" cy="0" r="5" fill="#F5A623"/>
-                    </g>
-                </svg>`;
+                return `<svg viewBox="0 0 100 100"><defs><radialGradient id="gradF${index}" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="hsl(${hue}, 100%, 80%)" /><stop offset="100%" stop-color="hsl(${hue}, 100%, 40%)" /></radialGradient></defs>${pot}<path d="M50 80 Q45 40 50 30" stroke="#2E5004" stroke-width="6" fill="none"/><g transform="translate(50,30)">${[0,45,90,135,180,225,270,315].map(rot => `<ellipse cx="0" cy="-15" rx="10" ry="20" fill="url(#gradF${index})" transform="rotate(${rot})" opacity="0.9"/>`).join('')}<circle cx="0" cy="0" r="8" fill="#3E2723"/><circle cx="0" cy="0" r="5" fill="#F5A623"/></g></svg>`;
             }
             if (category === 'tree') {
-                return `<svg viewBox="0 0 100 100">
-                    <defs>
-                        <radialGradient id="gradT${index}" cx="30%" cy="30%" r="70%">
-                            <stop offset="0%" stop-color="hsl(${hue}, 60%, 40%)" />
-                            <stop offset="100%" stop-color="hsl(${hue}, 80%, 20%)" />
-                        </radialGradient>
-                    </defs>
-                    ${pot}
-                    <path d="M42 80 L58 80 L53 30 L47 30 Z" fill="#5C3A21"/>
-                    <circle cx="50" cy="35" r="28" fill="url(#gradT${index})"/>
-                    <circle cx="30" cy="45" r="20" fill="url(#gradT${index})"/>
-                    <circle cx="70" cy="45" r="20" fill="url(#gradT${index})"/>
-                </svg>`;
+                return `<svg viewBox="0 0 100 100"><defs><radialGradient id="gradT${index}" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="hsl(${hue}, 60%, 40%)" /><stop offset="100%" stop-color="hsl(${hue}, 80%, 20%)" /></radialGradient></defs>${pot}<path d="M42 80 L58 80 L53 30 L47 30 Z" fill="#5C3A21"/><circle cx="50" cy="35" r="28" fill="url(#gradT${index})"/><circle cx="30" cy="45" r="20" fill="url(#gradT${index})"/><circle cx="70" cy="45" r="20" fill="url(#gradT${index})"/></svg>`;
             }
             if (category === 'fruit') {
-                return `<svg viewBox="0 0 100 100">
-                    <defs>
-                        <radialGradient id="gradFr${index}" cx="30%" cy="30%" r="70%">
-                            <stop offset="0%" stop-color="hsl(${hue}, 100%, 60%)" />
-                            <stop offset="100%" stop-color="hsl(${hue}, 100%, 30%)" />
-                        </radialGradient>
-                    </defs>
-                    ${pot}
-                    <path d="M45 80 L55 80 L52 40 L48 40 Z" fill="#5C3A21"/>
-                    <circle cx="50" cy="45" r="30" fill="#2E5004"/>
-                    ${[[40,30], [60,40], [50,60], [35,55], [65,25]].map(pos => `<circle cx="${pos[0]}" cy="${pos[1]}" r="6" fill="url(#gradFr${index})"/>`).join('')}
-                </svg>`;
+                return `<svg viewBox="0 0 100 100"><defs><radialGradient id="gradFr${index}" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="hsl(${hue}, 100%, 60%)" /><stop offset="100%" stop-color="hsl(${hue}, 100%, 30%)" /></radialGradient></defs>${pot}<path d="M45 80 L55 80 L52 40 L48 40 Z" fill="#5C3A21"/><circle cx="50" cy="45" r="30" fill="#2E5004"/>${[[40,30], [60,40], [50,60], [35,55], [65,25]].map(pos => `<circle cx="${pos[0]}" cy="${pos[1]}" r="6" fill="url(#gradFr${index})"/>`).join('')}</svg>`;
             }
         };
 
         const SPECIES_DB = { flower: [], tree: [], fruit: [] };
-        ['flower', 'tree', 'fruit'].forEach(cat => {
-            for(let i=1; i<=20; i++) {
-                SPECIES_DB[cat].push({ id: `${cat}_${i}`, name: `${cat.charAt(0).toUpperCase() + cat.slice(1)} Species ${i}` });
-            }
-        });
+        ['flower', 'tree', 'fruit'].forEach(cat => { for(let i=1; i<=20; i++) { SPECIES_DB[cat].push({ id: `${cat}_${i}`, name: `${cat.charAt(0).toUpperCase() + cat.slice(1)} Species ${i}` }); }});
 
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = msg;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
+            const toast = document.createElement('div'); toast.className = `toast ${type}`; toast.textContent = msg;
+            container.appendChild(toast); setTimeout(() => toast.classList.add('show'), 10);
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
         window.navigate = (screen) => {
-            closeMobileMenu();
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-links a').forEach(a => a.style.color = '');
-            
-            const minimalUi = document.getElementById('minimal-points-ui');
-            const cloudTrack = document.getElementById('cloud-track');
+            closeMobileMenu(); document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-links a').forEach(a => a.style.color = '');
+            const minimalUi = document.getElementById('minimal-points-ui'); const cloudTrack = document.getElementById('cloud-track');
 
             if(screen === 'garden') {
                 document.getElementById('nav-garden').style.color = 'var(--primary-blue)';
                 if (userData.activeSpeciesId) {
-                    document.getElementById('garden-screen').classList.add('active');
-                    minimalUi.style.display = 'flex';
-                    cloudTrack.style.display = 'block';
+                    document.getElementById('garden-screen').classList.add('active'); minimalUi.style.display = 'flex'; cloudTrack.style.display = 'block';
                 } else {
-                    document.getElementById('selection-screen').classList.add('active');
-                    minimalUi.style.display = 'none';
-                    cloudTrack.style.display = 'none';
+                    document.getElementById('selection-screen').classList.add('active'); minimalUi.style.display = 'none'; cloudTrack.style.display = 'none';
                 }
-                updateUI();
+                updateStaticUI();
             } else if (screen === 'collection') {
                 document.getElementById('nav-collection').style.color = 'var(--primary-blue)';
-                document.getElementById('collection-screen').classList.add('active');
-                minimalUi.style.display = 'none';
-                cloudTrack.style.display = 'none';
+                document.getElementById('collection-screen').classList.add('active'); minimalUi.style.display = 'none'; cloudTrack.style.display = 'none';
                 renderCollection();
             }
         };
 
         window.saveSubtleName = async () => {
-            const input = document.getElementById('subtle-plant-name-input');
-            const newName = input.value.trim() || "My Plant";
-            try {
-                await update(ref(db, `users/${currentUser.uid}`), { plantName: newName });
-                userData.plantName = newName;
-                showToast("Plant name updated!", "success");
-            } catch (err) { showToast("Failed to save plant name.", "error"); }
+            const input = document.getElementById('subtle-plant-name-input'); const newName = input.value.trim() || "My Plant";
+            try { await update(ref(db, `users/${currentUser.uid}`), { plantName: newName }); userData.plantName = newName; showToast("Plant name updated!", "success"); } 
+            catch (err) { showToast("Failed to save plant name.", "error"); }
         };
 
         window.selectPlant = async (category) => {
             if (!currentUser) return;
-            const speciesList = SPECIES_DB[category];
-            const randomSpecies = speciesList[Math.floor(Math.random() * 20)];
-            const initialInput = document.getElementById('initial-plant-name').value.trim();
-            const chosenName = initialInput || randomSpecies.name; 
+            const existingCollection = userData.collection || [];
+            if(existingCollection.length >= 60) { showToast("Collection Maxed (60/60). Enjoy your 1M points!", "error"); return; } // Max cap validation
+
+            const speciesList = SPECIES_DB[category]; const randomSpecies = speciesList[Math.floor(Math.random() * 20)];
+            const initialInput = document.getElementById('initial-plant-name').value.trim(); const chosenName = initialInput || randomSpecies.name; 
             
             try {
-                const updates = { plantCategory: category, activeSpeciesId: randomSpecies.id, plantName: chosenName, points: 0 };
-                await update(ref(db, `users/${currentUser.uid}`), updates);
-                userData = { ...userData, ...updates };
-                document.getElementById('initial-plant-name').value = '';
-                navigate('garden');
-                startTimers();
+                // IMPORTANT: Repurposing 'points' to store the timestamp of when it was planted to conform with Firebase rules
+                const updates = { plantCategory: category, activeSpeciesId: randomSpecies.id, plantName: chosenName, points: Date.now() };
+                await update(ref(db, `users/${currentUser.uid}`), updates); userData = { ...userData, ...updates };
+                document.getElementById('initial-plant-name').value = ''; navigate('garden'); startTimers();
             } catch (err) { showToast("Failed to select seed.", "error"); }
         };
 
@@ -810,82 +595,40 @@
             const storedEntry = `${userData.activeSpeciesId}|${userData.plantName || 'Blessed Plant'}`;
             const existingCollection = userData.collection || [];
             const filteredCollection = existingCollection.filter(item => {
-                const itemId = item.includes('|') ? item.split('|')[0] : item;
-                return itemId !== userData.activeSpeciesId;
+                const itemId = item.includes('|') ? item.split('|')[0] : item; return itemId !== userData.activeSpeciesId;
             });
             filteredCollection.push(storedEntry);
             const updates = { points: 0, plantCategory: null, activeSpeciesId: null, collection: filteredCollection };
 
             try {
-                await update(ref(db, `users/${currentUser.uid}`), updates);
-                userData = { ...userData, ...updates };
-                showToast("Plant stored in collection!", "success");
-                navigate('garden');
+                await update(ref(db, `users/${currentUser.uid}`), updates); userData = { ...userData, ...updates };
+                showToast("Plant stored in collection!", "success"); navigate('garden');
             } catch (err) { showToast("Harvest failed.", "error"); }
         };
 
         function getSpeciesDetails(id) {
-            if(!id) return null;
-            const [cat, index] = id.split('_');
-            return SPECIES_DB[cat][parseInt(index)-1];
+            if(!id) return null; const [cat, index] = id.split('_'); return SPECIES_DB[cat][parseInt(index)-1];
         }
 
         function updateCloudStatus() {
             const cloudTrigger = document.getElementById('daily-reward-trigger');
             if (!cloudTrigger) return;
-            if (!isDailyRainAvailable()) { cloudTrigger.classList.add('cloud-disabled'); } 
-            else { cloudTrigger.classList.remove('cloud-disabled'); }
+            if (!isDailyRainAvailable()) { cloudTrigger.classList.add('cloud-disabled'); } else { cloudTrigger.classList.remove('cloud-disabled'); }
         }
 
-        function updateUI() {
+        // Renamed to updateStaticUI as time values update via the timer now.
+        function updateStaticUI() {
             if (!userData.activeSpeciesId) return;
-
-            document.getElementById('points-display').textContent = userData.points || 0;
-            document.getElementById('global-points-display').textContent = userData.globalPoints || 0;
+            document.getElementById('global-points-display').textContent = userData.globalPoints.toLocaleString() || 0;
             document.getElementById('subtle-plant-name-input').value = userData.plantName || "My Plant";
-
             const species = getSpeciesDetails(userData.activeSpeciesId);
-            
-            let currentStage = STAGES[0];
-            let stageIndex = 0;
-            for (let i = 0; i < STAGES.length; i++) {
-                if (userData.points >= STAGES[i].min && userData.points <= STAGES[i].max) {
-                    currentStage = STAGES[i]; stageIndex = i; break;
-                }
-            }
-
-            const visualContainer = document.getElementById('plant-visual');
-            if (stageIndex === 5) {
-                const [cat, idx] = userData.activeSpeciesId.split('_');
-                visualContainer.innerHTML = generateMatureSVG(cat, parseInt(idx));
-            } else { visualContainer.innerHTML = generateSharedSVG(stageIndex); }
-
-            document.getElementById('plant-stage-name').textContent = currentStage.name;
             document.getElementById('species-name').textContent = species ? species.name : '';
-
-            const neededText = document.getElementById('points-needed');
-            const standardActions = document.getElementById('standard-actions');
-            const harvestActions = document.getElementById('harvest-actions');
-
-            if (currentStage.max !== Infinity) {
-                neededText.textContent = `${STAGES[stageIndex + 1].min - userData.points} pts needed for next stage`;
-                const progress = ((userData.points - currentStage.min) / (currentStage.max - currentStage.min)) * 100;
-                document.getElementById('progress-bar').style.width = `${progress}%`;
-                standardActions.style.display = 'flex'; harvestActions.style.display = 'none';
-            } else {
-                neededText.textContent = "Fully Grown! Ready to store in collection.";
-                document.getElementById('progress-bar').style.width = `100%`;
-                standardActions.style.display = 'none'; harvestActions.style.display = 'flex';
-            }
             updateCloudStatus();
         }
 
         function renderCollection() {
-            const grid = document.getElementById('collection-grid');
-            grid.innerHTML = '';
-            
-            const rawCollection = userData.collection || [];
-            const collectionMap = {};
+            const grid = document.getElementById('collection-grid'); grid.innerHTML = '';
+            const rawCollection = userData.collection || []; const collectionMap = {};
             rawCollection.forEach(itemStr => {
                 if (typeof itemStr === 'string') {
                     if (itemStr.includes('|')) { const [id, customName] = itemStr.split('|'); collectionMap[id] = customName; } 
@@ -898,42 +641,33 @@
 
             ['flower', 'tree', 'fruit'].forEach(cat => {
                 SPECIES_DB[cat].forEach((species, idx) => {
-                    const isUnlocked = collectionMap.hasOwnProperty(species.id);
-                    const customName = collectionMap[species.id] || species.name;
-
-                    const el = document.createElement('div');
-                    el.className = `collection-card ${isUnlocked ? '' : 'locked'}`;
+                    const isUnlocked = collectionMap.hasOwnProperty(species.id); const customName = collectionMap[species.id] || species.name;
+                    const el = document.createElement('div'); el.className = `collection-card ${isUnlocked ? '' : 'locked'}`;
                     const svg = isUnlocked ? generateMatureSVG(cat, idx + 1) : `<svg viewBox="0 0 100 100"><path d="M30 70 Q50 20 70 70 Z" fill="#CBD5E0"/></svg>`;
                     
-                    if (isUnlocked) {
-                        el.innerHTML = `${svg}<span class="species-tag">${species.name}</span><div class="collection-name-box"><input type="text" class="collection-name-input" value="${customName}" data-species="${species.id}" maxLength="30" title="Click to edit stored name" />✏️</div>`;
-                    } else {
-                        el.innerHTML = `${svg}<span class="species-tag">Locked</span>`;
-                    }
+                    if (isUnlocked) { el.innerHTML = `${svg}<span class="species-tag">${species.name}</span><div class="collection-name-box"><input type="text" class="collection-name-input" value="${customName}" data-species="${species.id}" maxLength="30" title="Click to edit stored name" />✏️</div>`; } 
+                    else { el.innerHTML = `${svg}<span class="species-tag">Locked</span>`; }
                     grid.appendChild(el);
                 });
             });
 
             document.querySelectorAll('.collection-name-input').forEach(input => {
                 input.addEventListener('change', async (e) => {
-                    const targetSpeciesId = e.target.getAttribute('data-species');
-                    const updatedName = e.target.value.trim() || "Blessed Plant";
+                    const targetSpeciesId = e.target.getAttribute('data-species'); const updatedName = e.target.value.trim() || "Blessed Plant";
                     const updatedCollection = (userData.collection || []).map(itemStr => {
                         const itemId = itemStr.includes('|') ? itemStr.split('|')[0] : itemStr;
-                        if (itemId === targetSpeciesId) { return `${targetSpeciesId}|${updatedName}`; }
-                        return itemStr;
+                        if (itemId === targetSpeciesId) { return `${targetSpeciesId}|${updatedName}`; } return itemStr;
                     });
-                    try {
-                        await update(ref(db, `users/${currentUser.uid}`), { collection: updatedCollection });
-                        userData.collection = updatedCollection;
-                        showToast("Stored plant renamed!", "success");
-                    } catch (err) { showToast("Failed to update name.", "error"); }
+                    try { await update(ref(db, `users/${currentUser.uid}`), { collection: updatedCollection }); userData.collection = updatedCollection; showToast("Stored plant renamed!", "success"); } 
+                    catch (err) { showToast("Failed to update name.", "error"); }
                 });
             });
         }
 
         function formatTime(ms) {
-            const mins = Math.floor(ms / 60000); const secs = Math.floor((ms % 60000) / 1000);
+            if (ms <= 0) return "Ready";
+            const hrs = Math.floor(ms / 3600000); const mins = Math.floor((ms % 3600000) / 60000); const secs = Math.floor((ms % 60000) / 1000);
+            if(hrs > 0) return `${hrs}h ${mins}m left`;
             return `${mins}m ${secs}s left`;
         }
 
@@ -942,16 +676,51 @@
             timerInterval = setInterval(() => {
                 if(!userData.activeSpeciesId) return;
                 const now = Date.now();
+                const plantedAtTimestamp = userData.points || now;
+                // Calculate elapsed time (how long it has been growing)
+                const elapsedGrowthMs = Math.max(0, now - plantedAtTimestamp);
+
+                // Update UI based on time stages
+                let currentStage = STAGES[0]; let stageIndex = 0;
+                for (let i = 0; i < STAGES.length; i++) {
+                    if (elapsedGrowthMs >= STAGES[i].min && elapsedGrowthMs <= STAGES[i].max) { currentStage = STAGES[i]; stageIndex = i; break; }
+                }
+                
+                const visualContainer = document.getElementById('plant-visual');
+                if (stageIndex === 5 && visualContainer.dataset.stage !== 'mature') {
+                    const [cat, idx] = userData.activeSpeciesId.split('_'); visualContainer.innerHTML = generateMatureSVG(cat, parseInt(idx)); visualContainer.dataset.stage = 'mature';
+                } else if(stageIndex !== 5 && visualContainer.dataset.stage !== String(stageIndex)) {
+                    visualContainer.innerHTML = generateSharedSVG(stageIndex); visualContainer.dataset.stage = String(stageIndex);
+                }
+
+                document.getElementById('plant-stage-name').textContent = currentStage.name;
+                const neededText = document.getElementById('points-needed');
+                const standardActions = document.getElementById('standard-actions');
+                const harvestActions = document.getElementById('harvest-actions');
+
+                if (currentStage.max !== Infinity) {
+                    neededText.textContent = `Time to next stage: ${formatTime(currentStage.max - elapsedGrowthMs)}`;
+                    const totalGrowTime = STAGES[4].max;
+                    const progress = Math.min((elapsedGrowthMs / totalGrowTime) * 100, 100).toFixed(1);
+                    document.getElementById('progress-bar').style.width = `${progress}%`;
+                    document.getElementById('points-display').textContent = `${progress}%`;
+                    standardActions.style.display = 'flex'; harvestActions.style.display = 'none';
+                } else {
+                    neededText.textContent = "Fully Grown! Ready to store in collection.";
+                    document.getElementById('progress-bar').style.width = `100%`;
+                    document.getElementById('points-display').textContent = `100%`;
+                    standardActions.style.display = 'none'; harvestActions.style.display = 'flex';
+                }
+
+                // Action Cooldown Checkers
                 const waterLeft = COOLDOWNS.water - (now - (userData.lastWatered || 0));
                 const fertLeft = COOLDOWNS.fertilize - (now - (userData.lastFertilized || 0));
+                const btnWater = document.getElementById('btn-water'); const btnFertilize = document.getElementById('btn-fertilize');
 
-                const btnWater = document.getElementById('btn-water');
-                const btnFertilize = document.getElementById('btn-fertilize');
-
-                if (waterLeft <= 0) { btnWater.disabled = false; document.getElementById('water-sub').textContent = `+${POINTS.water} pts`; } 
+                if (waterLeft <= 0) { btnWater.disabled = false; document.getElementById('water-sub').textContent = `(-10 Mins)`; } 
                 else { btnWater.disabled = true; document.getElementById('water-sub').textContent = formatTime(waterLeft); }
 
-                if (fertLeft <= 0) { btnFertilize.disabled = false; document.getElementById('fert-sub').textContent = `+${POINTS.fertilize} pts`; } 
+                if (fertLeft <= 0) { btnFertilize.disabled = false; document.getElementById('fert-sub').textContent = `(-30 Mins)`; } 
                 else { btnFertilize.disabled = true; document.getElementById('fert-sub').textContent = formatTime(fertLeft); }
             }, 1000);
         }
@@ -975,28 +744,18 @@
         window.closeVerseModal = () => { document.getElementById('verse-modal').classList.remove('active'); };
 
         window.openDailyRainModal = () => {
-            const rainModal = document.getElementById('rain-modal');
-            const btn = document.getElementById('btn-claim-rain');
-            const status = document.getElementById('rain-modal-status');
-
-            if (!isDailyRainAvailable()) {
-                status.textContent = "The latest 6-hour rain shower has been claimed. Check back in the next 6-hour block!";
-                btn.disabled = true; btn.style.opacity = '0.5';
-            } else {
-                status.textContent = "Server Rain is active! Shower your plant for bonus growth!";
-                btn.disabled = false; btn.style.opacity = '1';
-            }
+            const rainModal = document.getElementById('rain-modal'); const btn = document.getElementById('btn-claim-rain'); const status = document.getElementById('rain-modal-status');
+            if (!isDailyRainAvailable()) { status.textContent = "The latest 6-hour rain shower has been claimed. Check back in the next 6-hour block!"; btn.disabled = true; btn.style.opacity = '0.5'; } 
+            else { status.textContent = "Server Rain is active! Shower your plant for bonus growth!"; btn.disabled = false; btn.style.opacity = '1'; }
             rainModal.classList.add('active');
         };
 
         window.closeRainModal = () => { document.getElementById('rain-modal').classList.remove('active'); };
 
         function triggerRainAnimation() {
-            const container = document.getElementById('rain-container');
-            const items = ['💧', '✨', '🌟', '🌱', '⭐'];
+            const container = document.getElementById('rain-container'); const items = ['💧', '✨', '🌟', '🌱', '⭐'];
             for(let i = 0; i < 40; i++) {
-                const particle = document.createElement('div'); particle.className = 'particle';
-                particle.textContent = items[Math.floor(Math.random() * items.length)];
+                const particle = document.createElement('div'); particle.className = 'particle'; particle.textContent = items[Math.floor(Math.random() * items.length)];
                 particle.style.left = `${Math.random() * 100}vw`; particle.style.fontSize = `${20 + Math.random() * 20}px`;
                 particle.style.animationDuration = `${1.5 + Math.random() * 2}s`; particle.style.animationDelay = `${Math.random() * 0.4}s`;
                 container.appendChild(particle); setTimeout(() => particle.remove(), 3500);
@@ -1006,35 +765,39 @@
         window.claimDailyRain = async () => {
             if (!isDailyRainAvailable()) { showToast("Already showered! Resets every 6 hours.", "error"); return; }
             const now = Date.now();
-            const newPlantPoints = (userData.points || 0) + POINTS.daily;
-            const newGlobalPoints = (userData.globalPoints || 0) + POINTS.daily;
             
-            const updates = { points: newPlantPoints, globalPoints: newGlobalPoints, lastDailyReward: now };
+            // Subtract time from the timestamp effectively pushing "plantedAt" backwards in time.
+            const newPlantedAt = Math.max(0, (userData.points || now) - TIME_DEDUCTIONS.daily); 
+            const newGlobalPoints = Math.min((userData.globalPoints || 0) + GLOBAL_REWARDS.daily, 1000000); // 1 Million Max Cap
+            const updates = { points: newPlantedAt, globalPoints: newGlobalPoints, lastDailyReward: now };
 
             try {
                 await update(ref(db, `users/${currentUser.uid}`), updates);
-                userData.points = newPlantPoints; userData.globalPoints = newGlobalPoints; userData.lastDailyReward = now;
-                closeRainModal(); triggerRainAnimation(); updateUI();
-                showToast("Server Rain Claimed! (+150 pts)", "success");
+                userData.points = newPlantedAt; userData.globalPoints = newGlobalPoints; userData.lastDailyReward = now;
+                closeRainModal(); triggerRainAnimation(); updateStaticUI(); updateCloudStatus();
+                showToast("Server Rain Claimed! Plant jumped 6 hours forward!", "success");
             } catch (err) { showToast("Failed to claim server rain.", "error"); }
         };
 
         async function performAction(action) {
             triggerWaterAnimation();
-            const reward = POINTS[action]; const now = Date.now();
-            const newPlantPoints = (userData.points || 0) + reward; const newGlobalPoints = (userData.globalPoints || 0) + reward;
+            const now = Date.now();
+            
+            const newPlantedAt = Math.max(0, (userData.points || now) - TIME_DEDUCTIONS[action]);
+            const newGlobalPoints = Math.min((userData.globalPoints || 0) + GLOBAL_REWARDS[action], 1000000); // 1 Million Max Cap
 
-            const updates = { points: newPlantPoints, globalPoints: newGlobalPoints };
+            const updates = { points: newPlantedAt, globalPoints: newGlobalPoints };
             if (action === 'water') updates.lastWatered = now;
             if (action === 'fertilize') updates.lastFertilized = now;
 
             try {
                 await update(ref(db, `users/${currentUser.uid}`), updates);
-                userData.points = newPlantPoints; userData.globalPoints = newGlobalPoints;
+                userData.points = newPlantedAt; userData.globalPoints = newGlobalPoints;
                 if (action === 'water') userData.lastWatered = now; if (action === 'fertilize') userData.lastFertilized = now;
                 
-                updateUI(); startTimers();
-                showToast(`${action.charAt(0).toUpperCase() + action.slice(1)} successful! (+${reward} pts)`, 'success');
+                updateStaticUI();
+                const timeStr = action === 'water' ? '10 mins' : '30 mins';
+                showToast(`Plant aged by ${timeStr}!`, 'success');
                 showBibleVerseModal();
             } catch (err) { showToast("Action failed. Try again.", "error"); }
         }
